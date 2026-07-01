@@ -6,7 +6,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.static('.')); 
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, '.')));
 
 // This correctly maps the URL path "/uploads" to the physical server folder "/tmp/uploads"
 app.use('/uploads', express.static('/tmp/uploads'));
