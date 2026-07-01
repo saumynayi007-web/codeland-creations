@@ -11,7 +11,9 @@ app.use(express.static(path.join(__dirname, '.')));
 // This correctly maps the URL path "/uploads" to the physical server folder "/tmp/uploads"
 app.use('/uploads', express.static('/tmp/uploads'));
 app.use(express.static(__dirname));
-
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 if (!fs.existsSync('/tmp/uploads')) {
     fs.mkdirSync('/tmp/uploads', { recursive: true });
 }
