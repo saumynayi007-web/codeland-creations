@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Codeland Creations | Premium Digital Architecture</title>
+
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,200..1000;1,9..40,200..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+   
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+   
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+   
+
+    <style>
+
+        :root {
+
+            --bg-dark: #07090e;
+
+            --card-bg: #0d111a;
+
+            --card-hover: #131926;
+
+            --gold-bright: #dfcaa7;
+
+            --gold-muted: #c5b08d;
+
+            --text-light: #f8fafc;
+
+            --text-dim: #8e9bb4;
+
+            --border-color: rgba(223, 202, 167, 0.08);
+
+            --border-hover: rgba(223, 202, 167, 0.3);
+
+        }
+
+
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+
+            font-family: 'DM Sans', sans-serif;
+
+        }
+
+
+
+        body {
+
+            background-color: var(--bg-dark);
+
+            color: var(--text-light);
+
+            overflow-x: hidden;
+
+            line-height: 1.6;
+
+        }
+
+
+
+        /* --- Full Screen Video-Style Intro Preloader --- */
+
+        #intro-preloader {
+
+            position: fixed;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 100vh;
+
+            background-color: #07090e;
+
+            z-index: 99999;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            overflow: hidden;
+
+        }
+
+
+
+        .intro-container {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 1.5rem;
+
+            position: relative;
+
+        }
+
+
+
+        .intro-brain {
+
+            font-size: 4rem;
+
+            color: var(--gold-bright);
+
+            opacity: 0;
+
+            transform: scale(0.6);
+
+            filter: drop-shadow(0 0 20px rgba(223, 202, 167, 0.2));
+
+        }
+
+
+
+        .intro-text {
+
+            font-family: 'DM Sans', sans-serif;
+
+            font-size: 2.8rem;
+
+            font-weight: 800;
+
+            letter-spacing: 4px;
+
+            color: var(--gold-bright);
+
+            text-transform: uppercase;
+
+            white-space: nowrap;
+
+            clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
+
+        }
+
+
+
+        .lens-flare {
+
+            position: absolute;
+
+            top: -50%;
+
+            left: -150%;
+
+            width: 60px;
+
+            height: 200%;
+
+            background: linear-gradient(90deg, transparent, rgba(223, 202, 167, 0.4), #fff, rgba(223, 202, 167, 0.4), transparent);
+
+            transform: rotate(25deg);
+
+            pointer-events: none;
+
+            mix-blend-mode: overlay;
+
+        }
+
+
+
+        /* --- Custom Premium Mouse Cursor Glow --- */
+
+        #custom-cursor {
+
+            width: 20px;
+
+            height: 20px;
+
+            background: var(--gold-bright);
+
+            border-radius: 50%;
+
+            position: fixed;
+
+            pointer-events: none;
+
+            z-index: 9999;
+
+            mix-blend-mode: difference;
+
+            transform: translate(-50%, -50%);
+
+            transition: width 0.2s, height 0.2s;
+
+        }
+
+
+
+        /* --- Floating Glassmorphic Navigation Header --- */
+
+        header {
+
+            position: fixed;
+
+            top: 20px;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            width: calc(100% - 40px);
+
+            max-width: 1300px;
+
+            background: rgba(13, 17, 26, 0.4);
+
+            backdrop-filter: blur(20px);
+
+            -webkit-backdrop-filter: blur(20px);
+
+            border: 1px solid var(--border-color);
+
+            border-radius: 100px;
+
+            z-index: 1000;
+
+            padding: 1.2rem 3rem;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            opacity: 0;
+
+        }
+
+
+
+        .logo-link img {
+    height: 42px; 
+    width: 42px; /* Set a fixed square size for consistent rounding */
+    object-fit: cover; /* Ensures your logo fills the box without stretching */
+    display: block;
+    border-radius: 12px; /* This creates the curved corners */
+    transition: transform 0.3s ease, border-radius 0.3s ease;
+}
+
+.logo-link:hover img {
+    transform: scale(1.05);
+    border-radius: 18px; /* Slightly more curve on hover for a premium effect */
+}
+
+
+
+        .nav-links {
+
+            display: flex;
+
+            gap: 2.5rem;
+
+            list-style: none;
+
+        }
+
+
+
+        .nav-links a {
+
+            color: var(--text-dim);
+
+            text-decoration: none;
+
+            font-size: 0.85rem;
+
+            font-weight: 500;
+
+            letter-spacing: 1.5px;
+
+            text-transform: uppercase;
+
+            transition: color 0.4s;
+
+        }
+
+
+
+        .nav-links a:hover {
+
+            color: var(--gold-bright);
+
+        }
+
+
+
+        /* --- Hero Section --- */
+
+        .hero {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            padding: 0 10%;
+
+            position: relative;
+
+            background: radial-gradient(circle at 80% 20%, rgba(223, 202, 167, 0.03), transparent 50%);
+
+        }
+
+
+
+        .hero-tag {
+
+            color: var(--gold-muted);
+
+            font-size: 0.9rem;
+
+            text-transform: uppercase;
+
+            letter-spacing: 4px;
+
+            margin-bottom: 1.5rem;
+
+            display: block;
+
+            opacity: 0;
+
+            transform: translateY(20px);
+
+        }
+
+
+
+        .hero h1 {
+
+            font-family: 'Playfair Display', serif;
+
+            font-size: clamp(3rem, 6vw, 6.5rem);
+
+            font-weight: 400;
+
+            line-height: 1.05;
+
+            letter-spacing: -1px;
+
+            max-width: 1100px;
+
+            opacity: 0;
+
+            transform: translateY(40px);
+
+        }
+
+
+
+        .hero h1 span {
+
+            font-style: italic;
+
+            color: var(--gold-bright);
+
+            font-weight: 400;
+
+        }
+
+
+
+        /* --- Premium Bento Box Layout --- */
+
+        .services-section {
+
+            padding: 10rem 10%;
+
+            max-width: 1600px;
+
+            margin: 0 auto;
+
+        }
+
+
+
+        .section-header {
+
+            margin-bottom: 5rem;
+
+        }
+
+
+
+        .section-label {
+
+            color: var(--gold-muted);
+
+            text-transform: uppercase;
+
+            letter-spacing: 3px;
+
+            font-size: 0.85rem;
+
+            margin-bottom: 1rem;
+
+            display: block;
+
+        }
+
+
+
+        .section-title {
+
+            font-family: 'Playfair Display', serif;
+
+            font-size: clamp(2rem, 4vw, 3.5rem);
+
+            font-weight: 400;
+
+        }
+
+
+
+        .bento-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 2rem;
+
+        }
+
+
+
+        .bento-card {
+
+            background: var(--card-bg);
+
+            border: 1px solid var(--border-color);
+
+            padding: 3.5rem;
+
+            border-radius: 16px;
+
+            position: relative;
+
+            transition: background 0.4s, border-color 0.4s, transform 0.4s;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: space-between;
+
+            min-height: 380px;
+
+        }
+
+
+
+        .bento-card::before {
+
+            content: '';
+
+            position: absolute;
+
+            top: 0; left: 0; width: 100%; height: 100%;
+
+            border-radius: 16px;
+
+            background: radial-gradient(800px circle at var(--x, 0px) var(--y, 0px), rgba(223, 202, 167, 0.04), transparent 40%);
+
+            pointer-events: none;
+
+        }
+
+
+
+        .bento-card:hover {
+
+            background: var(--card-hover);
+
+            border-color: var(--border-hover);
+
+            transform: translateY(-4px);
+
+        }
+
+
+
+        .card-num {
+
+            font-family: 'Playfair Display', serif;
+
+            font-size: 1.5rem;
+
+            color: var(--gold-muted);
+
+            font-style: italic;
+
+        }
+
+
+
+        .bento-card h3 {
+
+            font-size: 1.8rem;
+
+            font-weight: 400;
+
+            margin-bottom: 1rem;
+
+            color: #fff;
+
+            letter-spacing: -0.5px;
+
+        }
+
+
+
+        .bento-card p {
+
+            color: var(--text-dim);
+
+            font-size: 1.05rem;
+
+        }
+
+
+
+        .span-2 {
+
+            grid-column: span 2;
+
+        }
+
+
+
+        /* --- Verification & Checkout Dashboard --- */
+
+        .checkout-section {
+
+            padding: 8rem 10%;
+
+            background: #090c12;
+
+            border-top: 1px solid var(--border-color);
+
+            display: flex;
+
+            justify-content: center;
+
+        }
+
+
+
+        .payment-container {
+
+            width: 100%;
+
+            max-width: 600px;
+
+            background: var(--card-bg);
+
+            border: 1px solid var(--border-color);
+
+            padding: 4rem;
+
+            border-radius: 24px;
+
+            text-align: center;
+
+        }
+
+
+
+        .price-tag {
+
+            font-family: 'Playfair Display', serif;
+
+            font-size: clamp(3rem, 5vw, 4.5rem);
+
+            color: var(--gold-bright);
+
+            margin: 2rem 0;
+
+            font-weight: 400;
+
+        }
+
+
+
+        .pay-btn {
+
+            width: 100%;
+
+            background: var(--gold-bright);
+
+            color: var(--bg-dark);
+
+            border: none;
+
+            padding: 1.4rem;
+
+            font-size: 0.9rem;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 2px;
+
+            cursor: pointer;
+
+            border-radius: 50px;
+
+            transition: background 0.3s, transform 0.2s;
+
+        }
+
+.diagram-label { 
+    cursor: pointer; 
+    transition: font-weight 0.25s, opacity 0.3s; 
+    white-space: nowrap; 
+    font-size: clamp(0.9rem, 2vw, 1.2rem); 
+    pointer-events: auto; /* Ensures labels catch mouse events */
+    user-select: none;
+}
+.line-spoke {
+    stroke: white;
+    stroke-width: 0.18;
+    opacity: 0.45;
+    transition: all 0.3s ease; /* Let CSS handle the smoothness */
+}
+
+.line-spoke.active {
+    stroke-width: 0.8;
+    opacity: 1;
+}
+        .pay-btn:hover {
+
+            background: #fff;
+
+            transform: scale(1.02);
+
+        }
+
+
+
+        @media (max-width: 1024px) {
+
+            .bento-grid { grid-template-columns: 1fr; }
+
+            .span-2 { grid-column: span 1; }
+
+            .hero { padding: 0 5%; }
+
+            .services-section { padding: 6rem 5%; }
+
+        }
+
+        .branding-section { background: #0f0f0f; color: #fff; padding: 100px 10%; overflow: hidden; }
+.glitch-block { position: absolute; background: white; }
+.diagram-label { cursor: pointer; transition: font-weight 0.25s, opacity 0.3s; white-space: nowrap; font-size: clamp(1.25rem, 2.8vw, 2.4rem); }
+.line-spoke { transition: stroke-width 0.3s, opacity 0.3s; }
+   
+:root {
+        --hero-max-width: 1820px;
+    }
+
+    .site-footer {
+        position: relative;
+        z-index: 100;
+        overflow: hidden;
+        background: #000000;
+        color: #ffffff;
+        font-family: "Geist", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: geometricPrecision;
+    }
+
+    .site-footer a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    /* ANIMATED DOTS STRIP */
+    .footer-dots {
+        position: relative;
+        height: 120px;
+        overflow: hidden;
+        background: #000000;
+    }
+
+    .footer-dots__line {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 200%;
+        height: 70px;
+        opacity: 0.75;
+        transform: translateY(-50%);
+        background-image: 
+            radial-gradient(circle, rgb(255 255 255 / 0.55) 1.5px, transparent 2px),
+            radial-gradient(circle, rgb(255 255 255 / 0.35) 1px, transparent 1.5px),
+            radial-gradient(circle, rgb(255 255 255 / 0.45) 1.2px, transparent 1.8px);
+        background-position: 0 8px, 24px 22px, 48px 14px;
+        background-size: 72px 38px, 110px 44px, 160px 52px;
+        animation: footerDotsMove 18s linear infinite;
+    }
+
+    @keyframes footerDotsMove {
+        from { transform: translate3d(0, -50%, 0); }
+        to   { transform: translate3d(-50%, -50%, 0); }
+    }
+
+    /* FOOTER INNER WRAPPER */
+    .site-footer__inner {
+        width: min(100% - 96px, var(--hero-max-width));
+        margin: 0 auto;
+        padding: clamp(34px, 4vw, 66px) 0 clamp(18px, 2vw, 34px);
+    }
+
+    /* NAV & HEADER TOP GRID */
+    .site-footer__top {
+        display: grid;
+        grid-template-columns: minmax(320px, 1.25fr) repeat(3, minmax(150px, 0.42fr));
+        gap: clamp(28px, 4vw, 76px);
+        min-height: clamp(220px, 24vw, 330px);
+    }
+
+    .site-footer__heading {
+        max-width: 680px;
+        margin: 0;
+        color: #ffffff;
+        font-size: clamp(34px, 3.5vw, 62px);
+        font-weight: 220;
+        letter-spacing: 0;
+        line-height: 1.06;
+    }
+
+    .site-footer__nav {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: clamp(14px, 1.35vw, 22px);
+    }
+
+    .site-footer__link {
+        color: rgb(255 255 255 / 0.88);
+        font-size: 16px;
+        font-weight: 650;
+        line-height: 1.1;
+        transition: color 180ms ease, transform 180ms ease;
+    }
+
+    .site-footer__link:hover {
+        color: #ffffff;
+        transform: translateX(3px);
+    }
+
+    /* OVERSIZED BRAND ROW */
+    .site-footer__brand-row {
+        width: 100%;
+        margin-top: clamp(18px, 3vw, 46px);
+    }
+
+    .site-footer__brand {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        color: #ffffff;
+    }
+
+.site-footer__mark {
+    position: relative;
+    flex: 0 0 clamp(40px, 4.5vw, 70px);
+    aspect-ratio: 1;
+    margin-right: clamp(12px, 1.2vw, 20px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .site-footer__wordmark {
+        display: block;
+        flex: 1 1 auto;
+        min-width: 0;
+        font-size: clamp(58px, 11.1vw, 214px);
+        font-weight: 760;
+        letter-spacing: -0.055em;
+        line-height: 0.78;
+        white-space: nowrap;
+        color:navajowhite;
+    }
+
+    /* LEGAL SECTION */
+    .site-footer__legal {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 8px 18px;
+        margin-top: clamp(14px, 1.4vw, 24px);
+        color: rgb(255 255 255 / 0.52);
+        font-size: 9px;
+        line-height: 1.35;
+    }
+
+    .site-footer__legal p {
+        margin: 0;
+    }
+
+    .site-footer__legal a {
+        color: inherit;
+        transition: color 0.3s;
+    }
+
+    .site-footer__legal a:hover {
+        color: #ffffff;
+    }
+
+    /* RESPONSIVE MEDIA TARGETS */
+    @media (max-width: 980px) {
+        .site-footer__inner {
+            width: min(100% - 48px, var(--hero-max-width));
+        }
+        .site-footer__top {
+            grid-template-columns: 1fr 1fr;
+        }
+        .site-footer__heading {
+            grid-column: 1 / -1;
+        }
+    }
+
+    @media (max-width: 560px) {
+        .site-footer__inner {
+            width: min(100% - 32px, var(--hero-max-width));
+        }
+        .site-footer__top {
+            grid-template-columns: 1fr;
+            min-height: auto;
+        }
+        .site-footer__link {
+            font-size: 15px;
+        }
+        .site-footer__mark {
+            flex-basis: clamp(38px, 12vw, 58px);
+        }
+        .site-footer__wordmark {
+            font-size: clamp(45px, 18vw, 84px);
+        }
+    }   
+   
+</style>
+
+</head>
+
+<body>
+
+
+
+    <div id="intro-preloader">
+
+        <div class="intro-container">
+
+            <i class="fa-solid fa-brain intro-brain"></i>
+
+            <div class="intro-text">CodelandCreations</div>
+
+            <div class="lens-flare"></div>
+
+        </div>
+
+    </div>
+
+
+
+    <div id="custom-cursor"></div>
+
+
+
+    <header id="main-header">
+    <a href="#" class="logo-link" style="display: flex; align-items: center; gap: 15px; text-decoration: none;">
+        <img src="logo.jpg" alt="Codeland Creations">
+        <span style="font-family: 'DM Sans', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--gold-bright); letter-spacing: 0.5px; text-transform: uppercase;">
+            Codeland Creations
+        </span>
+    </a>
+    <ul class="nav-links">
+        <li><a href="#services">Capabilities</a></li>
+        <li><a href="#payment">Retainer Portal</a></li>
+        <li><a href="#branding-approach">Branding Approach</a></li>
+        <li><a href="#contact">Get In Touch</a></li>
+    </ul>
+</header>
+
+
+
+    <main>
+
+        <section class="hero">
+
+            <!-- Background Video: Forced to the absolute back -->
+
+    <video autoplay muted loop playsinline style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1;">
+
+        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260514_135830_bb6491d1-9b66-4aec-9722-13b4dfe3fb46.mp4" type="video/mp4">
+
+    </video>
+
+            <span class="hero-tag" id="tag">Next-Gen Digital Studio</span>
+
+            <h1 id="title">We weave engineered excellence into <span>premium digital reality</span>.</h1>
+
+        </section>
+
+
+
+        <section id="services" class="services-section">
+
+            <div class="section-header">
+
+                <span class="section-label">Expertise</span>
+
+                <h2 class="section-title">Architecting systems that scale.</h2>
+
+            </div>
+
+           
+
+            <div class="bento-grid">
+
+                <div class="bento-card span-2">
+
+                    <span class="card-num">01 /</span>
+
+                    <div>
+
+                        <h3>Elite UI/UX Architecture</h3>
+
+                        <p>High-end fluid animation engineering optimized across all viewport horizons. We don't just design web pages; we construct interactive brand experiences.</p>
+
+                    </div>
+
+                </div>
+
+               
+
+                <div class="bento-card">
+
+                    <span class="card-num">02 /</span>
+
+                    <div>
+
+                        <h3>E-Commerce Engineering</h3>
+
+                        <p>Lightning-fast transactional engines built securely using decoupled, high-performance headless architecture protocols.</p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="bento-card">
+
+                    <span class="card-num">03 /</span>
+
+                    <div>
+
+                        <h3>Bespoke Native Logic</h3>
+
+                        <p>Complex interactive web tools and customized application logic mapped meticulously to modern enterprise requirements.</p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="bento-card span-2">
+
+                    <span class="card-num">04 /</span>
+
+                    <div>
+
+                        <h3>Web Motion & Identity</h3>
+
+                        <p>Immersive micro-interactions and sleek scroll-driven design environments that leave lasting impressions on your users.</p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <section id="payment" class="checkout-section">
+
+            <div class="payment-container">
+
+                <span class="section-label">Initiation Retainer</span>
+
+                <div class="price-tag">₹7,500</div>
+
+               
+
+                <div id="pay-step-1">
+
+                    <p style="color: var(--text-dim); margin-bottom: 2.5rem; font-size: 1rem;">
+
+                        Direct encrypted routing gateway supporting Google Pay, PhonePe, and instant cross-network UPI native protocols.
+
+                    </p>
+
+                    <button class="pay-btn" onclick="openSecureGateway()">Process Retainer Safely</button>
+
+                </div>
+
+
+
+                <div id="pay-step-2" style="display: none; margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 2rem; text-align: left;">
+
+                    <h4 style="font-family: 'Playfair Display', serif; font-size: 1.4rem; color: #fff; margin-bottom: 0.5rem; text-align: center;">
+
+                        <i class="fa-solid fa-shield-halved" style="color: var(--gold-bright); margin-right: 8px;"></i> Verification Interface
+
+                    </h4>
+
+                    <p style="color: var(--text-dim); font-size: 0.85rem; text-align: center; margin-bottom: 1.5rem;">
+
+                        Once you complete the wire transfer via GPay/PhonePe, drop the transaction tracking metrics below to verify.
+
+                    </p>
+
+
+
+                    <form id="verification-form" onsubmit="submitVerification(event)">
+                           
+                        <div class="input-group" style="margin-bottom: 1.5rem;">
+    <label for="client-name" style="color: #8e9bb4; display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Your Full Name</label>
+    <input type="text" id="client-name" placeholder="Enter your name" required 
+           style="width: 100%; padding: 12px; background: #0d111a; border: 1px solid #1e293b; color: #fff; border-radius: 6px;">
+</div>
+
+                        <div style="margin-bottom: 1.2rem;">
+
+                            <label style="display: block; color: var(--gold-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Payment App Used</label>
+
+                            <select id="payment-app" required style="width: 100%; background: var(--bg-dark); border: 1px solid var(--border-color); padding: 1rem; color: #fff; border-radius: 8px; font-size: 0.95rem; outline: none; cursor: pointer;">
+
+                                <option value="" disabled selected>Select Interface</option>
+
+                                <option value="Google Pay">Google Pay (GPay)</option>
+
+                                <option value="PhonePe">PhonePe</option>
+
+                                <option value="Paytm">Paytm / BHIM UPI</option>
+
+                            </select>
+
+                        </div>
+
+
+
+                        <div style="margin-bottom: 1.2rem;">
+
+                            <label style="display: block; color: var(--gold-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">12-Digit UPI Ref ID / UTR</label>
+
+                            <input type="text" id="utr-number" placeholder="e.g. 349102847561" pattern="\d{12}" title="Please enter the exact 12-digit transaction index number" required style="width: 100%; background: var(--bg-dark); border: 1px solid var(--border-color); padding: 1rem; color: #fff; border-radius: 8px; font-size: 0.95rem; outline: none;">
+
+                        </div>
+
+
+
+                        <div style="margin-bottom: 2rem;">
+
+                            <label style="display: block; color: var(--gold-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Upload Transaction Screenshot</label>
+
+                            <input type="file" id="screenshot-file" accept="image/*" required style="width: 100%; background: var(--bg-dark); border: 1px solid var(--border-color); padding: 0.8rem; color: var(--text-dim); border-radius: 8px; font-size: 0.9rem; cursor: pointer;">
+
+                        </div>
+
+
+
+                        <button type="submit" class="pay-btn" style="border-radius: 8px;">Transmit Validation Log</button>
+
+                    </form>
+
+                </div>
+
+            </div>
+            
+
+        </section>
+
+        <section id="branding-approach" class="branding-section">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 80px;">
+            <div>
+                <h2 class="brand-h2" style="font-size: clamp(2rem, 3.4vw, 2.6rem); color: #6e6e6e; font-weight: 300;">Our Comprehensive</h2>
+                <h2 class="brand-h2" style="font-size: clamp(2rem, 3.4vw, 2.6rem); font-weight: 700;">Branding Approach</h2>
+            </div>
+            <button style="margin-top: 10px; width: 28px; height: 28px; border: 1px solid rgba(255,255,255,0.2); background: transparent; color: white; cursor: pointer;">
+                <svg viewBox="0 0 12 12" width="12" height="12" stroke="currentColor" stroke-width="1.3"><path d="M6 0v12M0 6h12"/></svg>
+            </button>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start;">
+            <div style="display: flex; gap: 40px; flex-wrap: wrap; flex: 1;">
+                <div id="portrait-box" style="position: relative; width: 250px; height: 310px; flex-shrink: 0;">
+                    <img src="https://images.pexels.com/photos/3778212/pexels-photo-3778212.jpeg" style="width:100%; height:100%; object-fit:cover;">
+                    </div>
+                <div style="max-width: 420px;">
+                    <p style="font-family: serif; font-size: 3.2rem; line-height: 0.7; color: #555;">“</p>
+                    <p style="font-size: 1.2rem; line-height: 1.6;">We kept seeing the same pattern — brands with potential lost between messy processes, scattered visuals, and forgettable websites. This studio exists to align it all into one clear, consistent story.</p>
+                    <div style="margin-top: 40px;">
+                        <div style="font-weight: 600; font-size: 1.15rem;">Saumy Nayi & Manav Padaliya</div>
+                        <div style="color: #6e6e6e; font-size: 0.85rem;">Both are Founders & Creative Directors</div>
+                    </div>
+                </div>
+            </div>
+
+           <div style="width: 100%; max-width: 440px; aspect-ratio: 1/1; position: relative;" id="diagram-container">
+    <svg viewBox="0 0 100 100" style="width:100%; height:100%; position:absolute;">
+        <circle cx="50" cy="50" r="30" fill="none" stroke="white" stroke-width="0.18" opacity="0.45" />
+        <line id="line-websites" x1="50" y1="50" x2="50" y2="50" stroke="white" stroke-width="0.18" opacity="0.45" class="line-spoke"/>
+        <line id="line-brands" x1="50" y1="50" x2="50" y2="50" stroke="white" stroke-width="0.18" opacity="0.45" class="line-spoke"/>
+        <line id="line-uiux" x1="50" y1="50" x2="50" y2="50" stroke="white" stroke-width="0.18" opacity="0.45" class="line-spoke"/>
+    </svg>
+</div>
+        </div>
+    </div>
+</section>
+
+<section id="contact" style="background: #07090e; padding: 120px 10%; color: #fff; border-top: 1px solid var(--border-color);">
+    <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;">
+        
+       <div>
+    <span class="section-label" style="display:block; margin-bottom: 20px; letter-spacing: 4px;">Get In Touch</span>
+    <h2 style="font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.1; margin-bottom: 30px;">
+        Ready to <span style="font-style: italic; color: var(--gold-bright);">architect</span> your digital future?
+    </h2>
+    <p style="color: var(--text-dim); font-size: 1.1rem; margin-bottom: 25px;">
+        Let's discuss your requirements. We operate on a first-come, first-served basis for our premium build slots.
+    </p>
+    
+   
+</div>
+
+        <form id="contact-form" style="background: #0d111a; padding: 50px; border-radius: 20px; border: 1px solid var(--border-color);">
+             <a href="mailto:codelandcreation@gmail.com" style="display: inline-flex; align-items: center; gap: 10px; color: var(--gold-bright); font-size: 1.1rem; font-weight: 700; text-decoration: none; transition: opacity 0.3s;">
+        <i class="fa-solid fa-envelope"></i>
+        codelandcreation@gmail.com
+    </a> </form>
+    </div>
+
+    <div class="contact-item" style="display: flex; align-items: center; gap: 12px; margin-bottom: 1rem;">
+    <i class="fa-brands fa-linkedin" style="color: #dfcaa7; font-size: 1.4rem; width: 24px; text-align: center;"></i>
+    
+    <a href="https://www.linkedin.com/in/saumy-n-8630a2393" target="_blank" 
+       style="color: #fff; text-decoration: none; font-size: 1rem; transition: color 0.3s;"
+       onmouseover="this.style.color='#dfcaa7'" 
+       onmouseout="this.style.color='#fff'">
+       LinkedIn Profile 
+    </a>
+</div>
+
+
+</section>
+    </main>
+<footer class="site-footer">
+    <div class="footer-dots" aria-hidden="true">
+        <div class="footer-dots__line"></div>
+    </div>
+
+    <div class="site-footer__inner">
+        <div class="site-footer__top">
+            <h2 class="site-footer__heading">Proven Advanced Propulsion Technology</h2>
+            
+            <nav class="site-footer__nav" aria-label="Footer navigation">
+                <a href="#services" class="site-footer__link">Capabilities</a>
+                <a href="#payment" class="site-footer__link">Retainer Portal</a>
+                <a href="#branding-approach" class="site-footer__link">Branding Approach</a>
+            </nav>
+
+            <nav class="site-footer__nav" aria-label="Company links">
+                <a href="#branding-approach" class="site-footer__link">Founders</a>
+                <a href="#contact" class="site-footer__link">Get In Touch</a>
+            </nav>
+
+            <nav class="site-footer__nav" aria-label="Social links">
+                <a href="https://www.linkedin.com/in/saumy-n-8630a2393" target="_blank" rel="noreferrer" class="site-footer__link">LinkedIn</a>
+            </nav>
+        </div>
+
+        <div class="site-footer__brand-row">
+            <a href="/" class="site-footer__brand" aria-label="Codeland Creations home">
+                <span class="site-footer__mark" aria-hidden="true"></span>
+                <span class="site-footer__wordmark">Codeland Creations</span>
+            </a>
+        </div>
+
+        <div class="site-footer__legal">
+            <p>&copy; 2026 Codeland Creations. All Rights Reserved.</p>
+            <a href="/privacy-policy" target="_blank" >Privacy Policy</a>
+            <a href="/terms-conditions" target="_blank" >Terms of Use</a>
+        </div>
+    </div>
+</footer>
+
+<footer style="padding: 3rem 2rem; background: #07090e; border-top: 1px solid #1e293b; text-align: center;">
+    <div style="margin-bottom: 1.5rem; display: flex; justify-content: center; gap: 24px;">
+        <a href="/privacy-policy" target="_blank" style="color: #8e9bb4; text-decoration: none; font-size: 0.9rem; transition: color 0.3s;" onmouseover="this.style.color='#dfcaa7'" onmouseout="this.style.color='#8e9bb4'">Privacy Policy</a>
+        <a href="/terms-conditions" target="_blank" style="color: #8e9bb4; text-decoration: none; font-size: 0.9rem; transition: color 0.3s;" onmouseover="this.style.color='#dfcaa7'" onmouseout="this.style.color='#8e9bb4'">Terms & Conditions</a>
+    </div>
+    <p style="color: #636f8a; font-size: 0.85rem; margin: 0;">
+        &copy; 2026 Codeland Creations. All Rights Reserved.
+    </p>
+</footer>
+
+    <div id="qr-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(7, 9, 14, 0.85); backdrop-filter: blur(15px); z-index: 99999; align-items: center; justify-content: center;">
+
+        <div style="background: #0d111a; border: 1px solid rgba(223, 202, 167, 0.2); padding: 3rem; border-radius: 24px; text-align: center; max-width: 400px; width: 90%; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+
+            <button onclick="closeQrModal()" style="position: absolute; top: 15px; right: 20px; background: none; border: none; color: #dfcaa7; font-size: 1.5rem; cursor: pointer;">&times;</button>
+
+            <h3 style="font-family: 'Playfair Display', serif; color: #fff; font-size: 1.8rem; margin-bottom: 0.5rem;">Scan to Pay</h3>
+
+            <p style="color: #8e9bb4; font-size: 0.9rem; margin-bottom: 2rem;">Scan using GPay, PhonePe, or your preferred UPI app</p>
+
+            <div id="qr-container" style="background: #fff; padding: 1.5rem; border-radius: 16px; display: inline-block; box-shadow: 0 10px 20px rgba(0,0,0,0.2); margin-bottom: 1.5rem;">
+
+                <img id="qr-image" src="" alt="UPI QR Code Grid" style="display: block; width: 220px; height: 220px;">
+
+            </div>
+
+            <div style="color: #dfcaa7; font-weight: 700; font-size: 1.3rem; margin-bottom: 0.5rem;">₹7,500</div>
+
+            <button onclick="proceedToVerification()" style="background: transparent; border: 1px solid var(--gold-bright); color: var(--gold-bright); padding: 0.6rem 1.2rem; border-radius: 50px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; margin-top: 1rem; transition: all 0.3s;">I have paid, verify now</button>
+
+        </div>
+
+    </div>
+
+
+
+    <script>
+
+        // Custom Fluid Cursor Tracker Logic
+
+        const cursor = document.getElementById('custom-cursor');
+
+        document.addEventListener('mousemove', (e) => {
+
+            cursor.style.left = e.clientX + 'px';
+
+            cursor.style.top = e.clientY + 'px';
+
+        });
+
+
+
+        document.querySelectorAll('a, button, .bento-card').forEach(item => {
+
+            item.addEventListener('mouseenter', () => { cursor.style.transform = 'translate(-50%, -50%) scale(2.5)'; });
+
+            item.addEventListener('mouseleave', () => { cursor.style.transform = 'translate(-50%, -50%) scale(1)'; });
+
+        });
+
+
+
+        // Spotlight Element Tracker Mapping for Bento Grids
+
+        document.querySelectorAll('.bento-card').forEach(card => {
+
+            card.addEventListener('mousemove', e => {
+
+                const rect = card.getBoundingClientRect();
+
+                card.style.setProperty('--x', `${e.clientX - rect.left}px`);
+
+                card.style.setProperty('--y', `${e.clientY - rect.top}px`);
+
+            });
+
+        });
+
+
+
+        // Intro Logo Animation Timeline Orchestration
+
+        window.addEventListener('DOMContentLoaded', () => {
+
+            const tl = gsap.timeline();
+
+
+
+            tl.to(".intro-brain", { opacity: 1, scale: 1, duration: 1.2, ease: "power2.out" });
+
+            tl.to(".intro-text", { clipPath: "polygon(0 0, 100% 0, 100% 100%, 0% 100%)", duration: 1.4, ease: "power3.inOut" }, "-=0.6");
+
+            tl.to(".lens-flare", { left: "150%", duration: 1.2, ease: "power2.inOut" }, "-=1.0");
+
+            tl.to("#intro-preloader", { opacity: 0, display: "none", duration: 0.8, ease: "power2.inOut" }, "+=0.5");
+
+           
+
+            // Releasing main page layouts smoothly
+
+            tl.to("#main-header", { opacity: 1, y: 0, duration: 0.8 }, "-=0.2");
+
+            tl.to("#tag", { opacity: 1, y: 0, duration: 0.8 }, "-=0.4");
+
+            tl.to("#title", { opacity: 1, y: 0, duration: 1.2, ease: "power4.out" }, "-=0.6");
+
+
+
+            // Scroll-triggered staggered lookups for Bento layouts
+
+            gsap.from(".bento-card", {
+
+                scrollTrigger: {
+
+                    trigger: ".bento-grid",
+
+                    start: "top 75%"
+
+                },
+
+                y: 50,
+
+                opacity: 0,
+
+                duration: 1.2,
+
+                stagger: 0.15,
+
+                ease: "power4.out"
+
+            });
+
+        });
+
+
+
+        // Intent Gateway Routing Script
+
+        function openSecureGateway() {
+
+            const upiId = "9328497318@fam"; // 👈 Swap with your real personal payment address handles
+
+            const payeeName = "Codeland Creations";
+
+            const amount = "7500.00";
+
+            const transactionNote = "Codeland Project Retainer Fee";
+
+
+
+            const upiString = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(transactionNote)}`;
+
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+
+
+            if (isMobile) {
+
+                // Instantly open GPay / PhonePe systems natively on phone architectures
+
+                window.location.href = upiString;
+
+                setTimeout(() => { proceedToVerification(); }, 2000);
+
+            } else {
+
+                // Desktop deployment fallback: Generates live dynamic scan canvas elements
+
+                const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiString)}`;
+
+                document.getElementById('qr-image').src = qrApiUrl;
+
+                const modal = document.getElementById('qr-modal');
+
+                modal.style.display = 'flex';
+
+                gsap.fromTo(modal.children[0], { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "power3.out" });
+
+            }
+
+        }
+
+
+
+        function closeQrModal() {
+
+            const modal = document.getElementById('qr-modal');
+
+            gsap.to(modal.children[0], { scale: 0.8, opacity: 0, duration: 0.3, ease: "power3.in", onComplete: () => {
+
+                modal.style.display = 'none';
+
+            }});
+
+        }
+
+
+
+        function proceedToVerification() {
+
+            closeQrModal();
+
+            document.getElementById('pay-step-1').style.display = 'none';
+
+            const step2 = document.getElementById('pay-step-2');
+
+            step2.style.display = 'block';
+
+            gsap.from(step2, { opacity: 0, y: 20, duration: 0.6 });
+
+        }
+
+
+
+       async function submitVerification(event) {
+    event.preventDefault();
+    
+    // 1. Gather all data including the file
+    const formData = new FormData();
+    formData.append('app', document.getElementById('payment-app').value);
+    formData.append('utr', document.getElementById('utr-number').value);
+    formData.append('screenshot', document.getElementById('screenshot-file').files[0]);
+    formData.append('clientName', document.getElementById('client-name').value);
+
+    const container = document.getElementById('pay-step-2');
+
+    // 2. Animate the transition to loading
+    gsap.to(container, { opacity: 0, y: -20, duration: 0.4, onComplete: async () => {
+        
+        try {
+            // 3. Transmit to the server
+            const response = await fetch('/api/verify-payment', {
+                method: 'POST',
+                body: formData // Note: Do NOT set Content-Type header for FormData
+            });
+
+            if (response.ok) {
+                // 4. Success UI
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 2rem 0;">
+                        <i class="fa-solid fa-circle-check" style="color: #10b981; font-size: 3.5rem; margin-bottom: 1.5rem;"></i>
+                        <h4 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #fff; margin-bottom: 0.5rem;">Receipt Received</h4>
+                        <p style="color: var(--text-dim); font-size: 0.95rem; margin-top: 0.5rem;">Your payment is under audit. We will clear the pipeline shortly.</p>
+                    </div>
+                `;
+            } else {
+                throw new Error('Server rejected the upload');
+            }
+        } catch (error) {
+            container.innerHTML = `<div style="padding: 2rem; color: #ef4444;">Error: Could not connect to audit desk. Please try again.</div>`;
+        }
+
+        // 5. Fade back in
+        gsap.to(container, { opacity: 1, y: 0, duration: 0.4 });
+    }});
+}
+ 
+        // Glitch Blocks setup
+const portrait = document.getElementById('portrait-box');
+const glitchData = [[2,-3,22,22],[12,-5,14,10],[28,-2,10,10],[82,22,8,8],[-4,75,16,12],[8,82,10,10],[-2,88,18,16],[56,82,12,14],[70,90,10,10],[42,94,8,6]];
+glitchData.forEach(d => {
+    const div = document.createElement('div');
+    div.className = 'glitch-block';
+    div.style.left = d[0]+'%'; div.style.top = d[1]+'%';
+    div.style.width = d[2]+'px'; div.style.height = d[3]+'px';
+    portrait.appendChild(div);
+});
+
+// Animate Sections
+gsap.from(".brand-h2", { scrollTrigger: "#branding-approach", y: 20, opacity: 0, stagger: 0.1, duration: 0.7 });
+gsap.from("#portrait-box, .glitch-block", { scrollTrigger: "#portrait-box", scale: 0, opacity: 0, stagger: 0.05, duration: 0.4 });
+
+// Circle Diagram Interaction
+const labels = [{id:'line-websites', text:'websites'}, {id:'line-brands', text:'brands'}, {id:'line-uiux', text:'ui/ux design'}];
+labels.forEach(l => {
+    const el = document.getElementById(l.id);
+    el.addEventListener('mouseenter', () => {
+        el.style.strokeWidth = "0.6";
+        el.style.opacity = "1";
+    });
+    el.addEventListener('mouseleave', () => {
+        el.style.strokeWidth = "0.18";
+        el.style.opacity = "0.45";
+    });
+});
+
+const container = document.getElementById('diagram-container');
+const diagramData = [
+    {id: 'line-websites', text: 'websites', angle: 215},
+    {id: 'line-brands', text: 'brands', angle: 335},
+    {id: 'line-uiux', text: 'ui/ux design', angle: 110}
+];
+
+diagramData.forEach((item) => {
+    // Math to position text (radius 46) and line end (radius 36)
+    const rad = (item.angle * Math.PI) / 180;
+    
+    // Label position
+    const labelX = 50 + 46 * Math.cos(rad);
+    const labelY = 50 + 46 * Math.sin(rad);
+    
+    // Line end position
+    const lineX = 50 + 36 * Math.cos(rad);
+    const lineY = 50 + 36 * Math.sin(rad);
+
+    // Create Label
+    const label = document.createElement('div');
+    label.className = 'diagram-label';
+    label.innerText = item.text;
+    label.style.position = 'absolute';
+    label.style.left = `${labelX}%`;
+    label.style.top = `${labelY}%`;
+    label.style.transform = 'translate(-50%, -50%)';
+    label.style.color = '#fff';
+    container.appendChild(label);
+
+    // Set Line coordinates
+    const line = document.getElementById(item.id);
+    line.setAttribute('x2', lineX);
+    line.setAttribute('y2', lineY);
+
+    // Interaction triggers
+// Interaction triggers
+label.addEventListener('mouseenter', () => {
+    line.classList.add('active'); // Add the class to make it bold
+    gsap.to(label, { fontWeight: 700, scale: 1.1, duration: 0.3 });
+});
+
+label.addEventListener('mouseleave', () => {
+    line.classList.remove('active'); // Remove the class to return to default
+    gsap.to(label, { fontWeight: 300, scale: 1, duration: 0.3 });
+});
+});
+
+    
+gsap.from("#contact", {
+    scrollTrigger: {
+        trigger: "#contact",
+        start: "top 75%"
+    },
+    opacity: 0,
+    y: 60,
+    duration: 1.2,
+    ease: "power3.out"
+});
+
+    </script>
+
+</body>
+
+</html> 
+
