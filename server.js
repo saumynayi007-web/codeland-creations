@@ -6,19 +6,25 @@ const app = express();
 
 app.use(express.json());
 app.use(express.static('.')); 
-app.use('/uploads', express.static('uploads'));
+
+// This correctly maps the URL path "/uploads" to the physical server folder "/tmp/uploads"
+app.use('/uploads', express.static('/tmp/uploads'));
 app.use(express.static(__dirname));
 
+if (!fs.existsSync('/tmp/uploads')) {
+    fs.mkdirSync('/tmp/uploads', { recursive: true });
+}
+
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => { cb(null, 'uploads/'); },
+    destination: (req, file, cb) => { 
+        cb(null, '/tmp/uploads/'); 
+    },
     filename: (req, file, cb) => {
         const utr = req.body.utr || 'unknown';
         cb(null, `${utr}-${Date.now()}${path.extname(file.originalname)}`);
     }
 });
 const upload = multer({ storage: storage });
-
-if (!fs.existsSync('./uploads')) fs.mkdirSync('./uploads');
 
 // Local database state array
 const submissions = [];
@@ -30,7 +36,8 @@ app.post('/api/verify-payment', upload.single('screenshot'), (req, res) => {
         clientName: req.body.clientName || "Valued Client",
         appUsed: req.body.app,
         utrNumber: req.body.utr,
-        screenshotPath: req.file ? req.file.path : null,
+        // FIX: Store the accessible web URL path, not the hard drive path
+        screenshotPath: req.file ? `uploads/${req.file.filename}` : null,
         submittedAt: new Date().toLocaleDateString('en-IN'),
         approved: false
     };
@@ -122,7 +129,7 @@ app.get('/admin/invoice/:id', (req, res) => {
         </head>
         <body>
             <div class="invoice-box">
-                <button class="print-btn" onclick="window.print()" style="float:right; background:#0f172a; color:#white; border:none; padding:10px 20px; color:#fff; font-weight:bold; cursor:pointer; border-radius:4px; margin-bottom:20px;">Print / Save PDF</button>
+                <button class="print-btn" onclick="window.print()" style="float:right; background:#0f172a; color:white; border:none; padding:10px 20px; color:#fff; font-weight:bold; cursor:pointer; border-radius:4px; margin-bottom:20px;">Print / Save PDF</button>
                 <div style="clear:both;"></div>
                 <div class="header">
                     <div>
@@ -156,13 +163,14 @@ app.get('/admin/invoice/:id', (req, res) => {
                         in this retainer fee and must be settled separately by the client.</strong>
                     </p>
                 </div>
+
         </body>
         </html>
     `);
 });
-// Privacy Policy Route
-app.get('/privacy-policy', (req, res) => {
-    res.send(`
+
+// Legal documents and listen blocks...
+app.get('/privacy-policy', (req, res) => { res.send(`
         <html>
         <head>
             <title>Privacy Policy — Codeland Creations</title>
@@ -192,9 +200,7 @@ app.get('/privacy-policy', (req, res) => {
     `);
 });
 
-// Terms & Conditions Route
-app.get('/terms-conditions', (req, res) => {
-    res.send(`
+app.get('/terms-conditions', (req, res) => { res.send(`
         <html>
         <head>
             <title>Terms & Conditions — Codeland Creations</title>
@@ -224,10 +230,9 @@ app.get('/terms-conditions', (req, res) => {
                     &copy; 2026 Codeland Creations. All Rights Reserved.
                 </footer>
             </div>
-        </body>
-        </html>
-    `);
-
+`);
 });
 
-app.listen(3000, () => console.log('Secure Server processing queries on port 3000'));
+app.listen(3000, () => { console.log('Secure Server processing queries on port 3000')});
+
+module.exports = app;
