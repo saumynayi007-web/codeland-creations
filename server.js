@@ -158,7 +158,7 @@ app.post('/api/approve-payment', async (req, res) => {
 
 
 // Production Invoice Template Generator
-aapp.get('/admin/invoice/:id', async (req, res) => {
+app.get('/admin/invoice/:id', async (req, res) => {
     try {
         const database = await connectDB();
         const collection = database.collection('submissions');
