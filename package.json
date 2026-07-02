@@ -2,6 +2,7 @@
   "dependencies": {
     "express": "^5.2.1",
     "multer": "^2.2.0",
+     "mongodb": "^7.4.0",
     "razorpay": "^2.9.6"
   }
 }
