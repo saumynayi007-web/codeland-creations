@@ -1464,9 +1464,12 @@
 
     const container = document.getElementById('pay-step-2');
 
+    const form = document.getElementById('paymentForm'); // or your form's actual ID
+    
     // 2. Animate the transition to loading
    gsap.to(container, { opacity: 0, y: -20, duration: 0.4, onComplete: async () => {
-    
+    // Ensure this is right above your GSAP block inside your submit function:
+
     try {
         // 3. Transmit to the server (Cleaned up arguments)
         const response = await fetch('/api/verify-payment', {
