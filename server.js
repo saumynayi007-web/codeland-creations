@@ -19,26 +19,16 @@ let cachedClient = null;
 let cachedDb = null;
 
 async function connectDB() {
-    // If the database connection instance already exists in runtime memory, return it instantly
-    if (cachedClient && cachedDb) {
-        return cachedDb;
-    }
-
-    if (!uri) {
-        throw new Error("Missing MONGODB_URI configuration parameter variable in environment pipeline.");
-    }
-
-    // Set production configuration overrides to prevent connection timing blocks
+    if (cachedClient && cachedDb) return cachedDb;
+    if (!uri) throw new Error("Missing MONGODB_URI environment variable.");
+    
     const client = new MongoClient(uri, {
         maxPoolSize: 10,
-        serverSelectionTimeoutMS: 5000,
-        socketTimeoutMS: 45000,
+        serverSelectionTimeoutMS: 5000
     });
 
-    await client.connect();
+  await client.connect();
     const db = client.db('codeland_billing');
-
-    // Cache the active connection handles globally
     cachedClient = client;
     cachedDb = db;
     return db;
@@ -51,18 +41,11 @@ app.get('/favicon.png', (req, res) => res.sendFile(path.join(__dirname, 'favicon
 app.get('/favicon.ico', (req, res) => res.sendFile(path.join(__dirname, 'favicon.png')));
 
 // 2. Updated endpoint that encodes your file into absolute text string payloads
-app.post('/api/verify-payment', upload.single('screenshot'), async (req, res) => {
+app.post('/api/verify-payment', async (req, res) => {
     try {
         const database = await connectDB();
         const collection = database.collection('submissions');
 
-        let screenshotDataUrl = null;
-        if (req.file) {
-            const base64Image = req.file.buffer.toString('base64');
-            screenshotDataUrl = `data:${req.file.mimetype};base64,${base64Image}`;
-        }
-
-        // Generate dynamic incremental structures based on existing cloud count
         const totalCount = await collection.countDocuments();
         
         const data = {
@@ -70,7 +53,7 @@ app.post('/api/verify-payment', upload.single('screenshot'), async (req, res) =>
             clientName: req.body.clientName || "Valued Client",
             appUsed: req.body.app,
             utrNumber: req.body.utr,
-            screenshotPath: screenshotDataUrl, 
+            screenshotPath: null, // No files breaking the server
             submittedAt: new Date().toLocaleDateString('en-IN'),
             approved: false
         };
@@ -88,13 +71,10 @@ app.get('/admin/proofs', async (req, res) => {
     try {
         const database = await connectDB();
         const collection = database.collection('submissions');
-        
-        // Fetch all elements ordered from newest entries down to oldest
         const submissions = await collection.find({}).toArray();
 
         let tableRows = '';
         submissions.forEach(item => {
-            const safeDataString = item.screenshotPath ? encodeURIComponent(item.screenshotPath) : '';
             tableRows += `
                 <tr>
                     <td>${item.id}</td>
@@ -102,16 +82,11 @@ app.get('/admin/proofs', async (req, res) => {
                     <td>${item.clientName}</td>
                     <td>${item.appUsed}</td>
                     <td style="font-weight: bold; color: #dfcaa7;">${item.utrNumber}</td>
-                    <td>
-                        ${item.screenshotPath ? 
-                            `<button onclick="openBlobImage('${safeDataString}')" style="background:#1e293b; color:#dfcaa7; border:1px solid #dfcaa7; padding:6px 12px; cursor:pointer; border-radius:4px; font-weight:bold;">👁️ View Proof</button>` : 
-                            `<span style="color:#636f8a;">No Image</span>`
-                        }
-                    </td>
+                    <td><span style="color:#636f8a;">Text Only Mode</span></td>
                     <td>
                         ${item.approved ? 
-                            `<a href="/admin/invoice/${item.id}" target="_blank" style="color: #10b981; text-decoration:none; font-weight:bold;">📄 View Active Bill</a>` : 
-                            `<button onclick="approvePayment('${item.id}')" style="background:#dfcaa7; border:none; padding:6px 12px; font-weight:bold; cursor:pointer; border-radius:4px;">Approve & Bill</button>`
+                            `<span style="color: #10b981; font-weight:bold;">📄 Approved</span>` : 
+                            `<button onclick="approvePayment('${item.id}')" style="background:#dfcaa7; border:none; padding:6px 12px; font-weight:bold; cursor:pointer; border-radius:4px;">Approve</button>`
                         }
                     </td>
                 </tr>`;
@@ -119,14 +94,13 @@ app.get('/admin/proofs', async (req, res) => {
 
         res.send(`
             <html>
-            <head>
-                <title>Codeland Admin Portal</title>
-                <style>
-                    body { font-family: sans-serif; background: #07090e; color: #fff; padding: 3rem; }
-                    table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
-                    th, td { border: 1px solid #1e293b; padding: 14px; text-align: left; }
-                    th { background: #0d111a; color: #dfcaa7; }
-                </style>
+            <head><title>Codeland Admin</title></head>
+            <body style="background: #07090e; color: #fff; font-family: sans-serif; padding: 3rem;">
+                <h2>Codeland Admin Desk (Database Stable Mode)</h2>
+                <table border="1" style="width:100%; border-collapse:collapse;">
+                    <tr><th>ID</th><th>Date</th><th>Client</th><th>App</th><th>UTR</th><th>Image Status</th><th>Action</th></tr>
+                    ${tableRows || '<tr><td colspan="7">No records found.</td></tr>'}
+                </table>
                 <script>
                     function approvePayment(id) {
                         fetch('/api/approve-payment', {
@@ -135,31 +109,12 @@ app.get('/admin/proofs', async (req, res) => {
                             body: JSON.stringify({ id: id })
                         }).then(() => window.location.reload());
                     }
-                    function openBlobImage(encodedData) {
-                        if(!encodedData) return;
-                        const dataURI = decodeURIComponent(encodedData);
-                        const byteString = atob(dataURI.split(',')[1]);
-                        const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-                        const ab = new ArrayBuffer(byteString.length);
-                        const ia = new Uint8Array(ab);
-                        for (let i = 0; i < byteString.length; i++) { ia[i] = byteString.charCodeAt(i); }
-                        const blob = new Blob([ab], {type: mimeString});
-                        const blobUrl = URL.createObjectURL(blob);
-                        window.open(blobUrl, '_blank');
-                    }
                 </script>
-            </head>
-            <body>
-                <h2 style="color: #dfcaa7;">Codeland Creations — Client Audit Desk</h2>
-                <table>
-                    <tr><th>Invoice ID</th><th>Date</th><th>Client Name</th><th>App</th><th>UTR / Ref Number</th><th>Screenshot</th><th>Action Panel</th></tr>
-                    ${tableRows || '<tr><td colspan="7" style="text-align:center; color:#636f8a;">No transactions awaiting clearance.</td></tr>'}
-                </table>
             </body>
             </html>
         `);
     } catch (err) {
-        res.status(500).send("Database extraction runtime fault: " + err.message);
+        res.status(500).send("Database Error: " + err.message);
     }
 });
 
@@ -168,7 +123,6 @@ app.post('/api/approve-payment', async (req, res) => {
     try {
         const database = await connectDB();
         const collection = database.collection('submissions');
-        
         await collection.updateOne({ id: req.body.id }, { $set: { approved: true } });
         res.status(200).json({ success: true });
     } catch (err) {
@@ -306,6 +260,5 @@ app.get('/terms-conditions', (req, res) => { res.send(`
 `);
 });
 
-app.listen(3000, () => { console.log('Secure Server processing queries on port 3000')});
-
+app.listen(3000);
 module.exports = app;
