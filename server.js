@@ -158,55 +158,63 @@ app.post('/api/approve-payment', async (req, res) => {
 
 
 // Production Invoice Template Generator
-app.get('/admin/invoice/:id', (req, res) => {
-    const order = submissions.find(item => item.id === req.params.id);
-    if (!order || !order.approved) return res.status(404).send("Invoice missing or verification pending clearance.");
+aapp.get('/admin/invoice/:id', async (req, res) => {
+    try {
+        const database = await connectDB();
+        const collection = database.collection('submissions');
 
-    res.send(`
-        <html>
-        <head>
-            <title>Invoice ${order.id}</title>
-            <style>
-                body { font-family: 'Segoe UI', sans-serif; color: #333; padding: 40px; background: #fff; }
-                .invoice-box { max-width: 800px; margin: auto; border: 1px solid #eee; padding: 30px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.05); }
-                .header { display: flex; justify-content: space-between; border-bottom: 2px solid #dfcaa7; padding-bottom: 20px; }
-                .meta-table { width: 100%; margin-top: 30px; border-collapse: collapse; }
-                .meta-table td { padding: 8px 0; }
-                .items-table { width: 100%; margin-top: 40px; border-collapse: collapse; }
-                .items-table th { background: #0f172a; color: #fff; padding: 12px; text-align: left; }
-                .items-table td { padding: 12px; border-bottom: 1px solid #eee; }
-                .total { text-align: right; font-size: 1.5rem; margin-top: 30px; font-weight: bold; color: #0f172a; }
-                @media print { .print-btn { display: none; } }
-            </style>
-        </head>
-        <body>
-            <div class="invoice-box">
-                <button class="print-btn" onclick="window.print()" style="float:right; background:#0f172a; color:white; border:none; padding:10px 20px; color:#fff; font-weight:bold; cursor:pointer; border-radius:4px; margin-bottom:20px;">Print / Save PDF</button>
-                <div style="clear:both;"></div>
-                <div class="header">
-                    <div>
-                        <h2 style="margin:0; color:#0f172a; letter-spacing:1px;">CODELAND CREATIONS</h2>
-                        <p style="font-size:0.9rem; color:#666; margin:5px 0 0 0;">Bespoke Premium Digital Architecture</p>
+        // Query the database directly for the dynamic invoice ID matching the URL parameter
+        const order = await collection.findOne({ id: req.params.id });
+
+        if (!order || !order.approved) {
+            return res.status(404).send("Invoice missing or verification pending clearance.");
+        }
+
+        res.send(`
+            <html>
+            <head>
+                <title>Invoice ${order.id}</title>
+                <style>
+                    body { font-family: 'Segoe UI', sans-serif; color: #333; padding: 40px; background: #fff; }
+                    .invoice-box { max-width: 800px; margin: auto; border: 1px solid #eee; padding: 30px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.05); }
+                    .header { display: flex; justify-content: space-between; border-bottom: 2px solid #dfcaa7; padding-bottom: 20px; }
+                    .meta-table { width: 100%; margin-top: 30px; border-collapse: collapse; }
+                    .meta-table td { padding: 8px 0; }
+                    .items-table { width: 100%; margin-top: 40px; border-collapse: collapse; }
+                    .items-table th { background: #0f172a; color: #fff; padding: 12px; text-align: left; }
+                    .items-table td { padding: 12px; border-bottom: 1px solid #eee; }
+                    .total { text-align: right; font-size: 1.5rem; margin-top: 30px; font-weight: bold; color: #0f172a; }
+                    @media print { .print-btn { display: none; } }
+                </style>
+            </head>
+            <body>
+                <div class="invoice-box">
+                    <button class="print-btn" onclick="window.print()" style="float:right; background:#0f172a; color:white; border:none; padding:10px 20px; font-weight:bold; cursor:pointer; border-radius:4px; margin-bottom:20px;">Print / Save PDF</button>
+                    <div style="clear:both;"></div>
+                    <div class="header">
+                        <div>
+                            <h2 style="margin:0; color:#0f172a; letter-spacing:1px;">CODELAND CREATIONS</h2>
+                            <p style="font-size:0.9rem; color:#666; margin:5px 0 0 0;">Bespoke Premium Digital Architecture</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <h1 style="margin:0; font-weight:300; color:#999;">INVOICE</h1>
+                            <p style="margin:5px 0 0 0; font-weight:bold;">${order.id}</p>
+                        </div>
                     </div>
-                    <div style="text-align: right;">
-                        <h1 style="margin:0; font-weight:300; color:#999;">INVOICE</h1>
-                        <p style="margin:5px 0 0 0; font-weight:bold;">${order.id}</p>
-                    </div>
+                    <table class="meta-table">
+                        <tr>
+                            <td><strong>Billed To:</strong><br>${order.clientName}</td>
+                            <td style="text-align:right;"><strong>Date:</strong> ${order.submittedAt}<br><strong>UTR Ref:</strong> ${order.utrNumber}</td>
+                        </tr>
+                    </table>
+                    <table class="items-table">
+                        <tr><th>Description</th><th>Qty</th><th style="text-align:right;">Amount</th></tr>
+                        <tr><td>Project Initiation Retainer Engagement Fee</td><td>1</td><td style="text-align:right;">₹7,500.00</td></tr>
+                    </table>
+                    <div class="total">Total Paid: ₹7,500.00</div>
+                    <p style="margin-top:60px; font-size:0.85rem; color:#999; text-align:center;">This is a system-generated electronic receipt confirming successful settlement clearance.</p>
                 </div>
-                <table class="meta-table">
-                    <tr>
-                        <td><strong>Billed To:</strong><br>${order.clientName}</td>
-                        <td style="text-align:right;"><strong>Date:</strong> ${order.submittedAt}<br><strong>UTR Ref:</strong> ${order.utrNumber}</td>
-                    </tr>
-                </table>
-                <table class="items-table">
-                    <tr><th>Description</th><th>Qty</th><th style="text-align:right;">Amount</th></tr>
-                    <tr><td>Project Initiation Retainer Engagement Fee</td><td>1</td><td style="text-align:right;">₹7,500.00</td></tr>
-                </table>
-                <div class="total">Total Paid: ₹7,500.00</div>
-                <p style="margin-top:60px; font-size:0.85rem; color:#999; text-align:center;">This is a system-generated electronic receipt confirming successful settlement clearance.</p>
-            </div>
-            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;">
+                <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; max-width: 800px; margin-left: auto; margin-right: auto;">
                     <h4 style="margin: 0 0 10px 0; font-size: 0.9rem;">Terms & Scope:</h4>
                     <p style="font-size: 0.8rem; color: #555; line-height: 1.4;">
                         This invoice covers professional architecture and design services only. 
@@ -215,10 +223,12 @@ app.get('/admin/invoice/:id', (req, res) => {
                         in this retainer fee and must be settled separately by the client.</strong>
                     </p>
                 </div>
-
-        </body>
-        </html>
-    `);
+            </body>
+            </html>
+        `);
+    } catch (err) {
+        res.status(500).send("Invoice rendering database error: " + err.message);
+    }
 });
 
 // Legal documents and listen blocks...
