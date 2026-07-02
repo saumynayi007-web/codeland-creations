@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const { MongoClient } = require('mongodb');
 const fs = require('fs');
 const app = express();
 
@@ -12,7 +13,19 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // Local database state array
-const submissions = [];
+
+const uri = process.env.MONGODB_URI; 
+const client = new MongoClient(uri);
+let db;
+
+async function connectDB() {
+    if (!db) {
+        await client.connect();
+        db = client.db('codeland_billing'); // Automatically creates a database named this
+        console.log("Successfully connected to cloud database layer.");
+    }
+    return db;
+}
 
 // Fallback image routes for branding assets
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
@@ -21,118 +34,132 @@ app.get('/favicon.png', (req, res) => res.sendFile(path.join(__dirname, 'favicon
 app.get('/favicon.ico', (req, res) => res.sendFile(path.join(__dirname, 'favicon.png')));
 
 // 2. Updated endpoint that encodes your file into absolute text string payloads
-app.post('/api/verify-payment', upload.single('screenshot'), (req, res) => {
-    let screenshotDataUrl = null;
+app.post('/api/verify-payment', upload.single('screenshot'), async (req, res) => {
+    try {
+        const database = await connectDB();
+        const collection = database.collection('submissions');
 
-    if (req.file) {
-        // Convert buffer to base64 string
-        const base64Image = req.file.buffer.toString('base64');
-        screenshotDataUrl = `data:${req.file.mimetype};base64,${base64Image}`;
+        let screenshotDataUrl = null;
+        if (req.file) {
+            const base64Image = req.file.buffer.toString('base64');
+            screenshotDataUrl = `data:${req.file.mimetype};base64,${base64Image}`;
+        }
+
+        // Generate dynamic incremental structures based on existing cloud count
+        const totalCount = await collection.countDocuments();
+        
+        const data = {
+            id: `INV-${1000 + totalCount + 1}`,
+            clientName: req.body.clientName || "Valued Client",
+            appUsed: req.body.app,
+            utrNumber: req.body.utr,
+            screenshotPath: screenshotDataUrl, 
+            submittedAt: new Date().toLocaleDateString('en-IN'),
+            approved: false
+        };
+
+        await collection.insertOne(data);
+        res.status(200).json({ success: true, data: data });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: err.message });
     }
-
-    const data = {
-        id: `INV-${1000 + submissions.length + 1}`,
-        clientName: req.body.clientName || "Valued Client",
-        appUsed: req.body.app,
-        utrNumber: req.body.utr,
-        screenshotPath: screenshotDataUrl, 
-        submittedAt: new Date().toLocaleDateString('en-IN'),
-        approved: false
-    };
-
-    submissions.push(data);
-    res.status(200).json({ success: true, data: data });
 });
 
 // Admin Panel showing incoming logs with live invoice compilation controls
-app.get('/admin/proofs', (req, res) => {
-    let tableRows = '';
-    submissions.forEach(item => {
-        // We escape the string values safely to ensure long strings don't crash HTML rendering parsing
-        const safeDataString = item.screenshotPath ? encodeURIComponent(item.screenshotPath) : '';
+app.get('/admin/proofs', async (req, res) => {
+    try {
+        const database = await connectDB();
+        const collection = database.collection('submissions');
+        
+        // Fetch all elements ordered from newest entries down to oldest
+        const submissions = await collection.find({}).toArray();
 
-        tableRows += `
-            <tr>
-                <td>${item.id}</td>
-                <td>${item.submittedAt}</td>
-                <td>${item.clientName}</td>
-                <td>${item.appUsed}</td>
-                <td style="font-weight: bold; color: #dfcaa7;">${item.utrNumber}</td>
-                <td>
-                    ${item.screenshotPath ? 
-                        `<button onclick="openBlobImage('${safeDataString}')" style="background:#1e293b; color:#dfcaa7; border:1px solid #dfcaa7; padding:6px 12px; cursor:pointer; border-radius:4px; font-weight:bold;">👁️ View Proof</button>` : 
-                        `<span style="color:#636f8a;">No Image</span>`
-                    }
-                </td>
-                <td>
-                    ${item.approved ? 
-                        `<a href="/admin/invoice/${item.id}" target="_blank" style="color: #10b981; text-decoration:none; font-weight:bold;">📄 View Active Bill</a>` : 
-                        `<button onclick="approvePayment('${item.id}')" style="background:#dfcaa7; border:none; padding:6px 12px; font-weight:bold; cursor:pointer; border-radius:4px;">Approve & Bill</button>`
-                    }
-                </td>
-            </tr>`;
-    });
+        let tableRows = '';
+        submissions.forEach(item => {
+            const safeDataString = item.screenshotPath ? encodeURIComponent(item.screenshotPath) : '';
+            tableRows += `
+                <tr>
+                    <td>${item.id}</td>
+                    <td>${item.submittedAt}</td>
+                    <td>${item.clientName}</td>
+                    <td>${item.appUsed}</td>
+                    <td style="font-weight: bold; color: #dfcaa7;">${item.utrNumber}</td>
+                    <td>
+                        ${item.screenshotPath ? 
+                            `<button onclick="openBlobImage('${safeDataString}')" style="background:#1e293b; color:#dfcaa7; border:1px solid #dfcaa7; padding:6px 12px; cursor:pointer; border-radius:4px; font-weight:bold;">👁️ View Proof</button>` : 
+                            `<span style="color:#636f8a;">No Image</span>`
+                        }
+                    </td>
+                    <td>
+                        ${item.approved ? 
+                            `<a href="/admin/invoice/${item.id}" target="_blank" style="color: #10b981; text-decoration:none; font-weight:bold;">📄 View Active Bill</a>` : 
+                            `<button onclick="approvePayment('${item.id}')" style="background:#dfcaa7; border:none; padding:6px 12px; font-weight:bold; cursor:pointer; border-radius:4px;">Approve & Bill</button>`
+                        }
+                    </td>
+                </tr>`;
+        });
 
-    res.send(`
-        <html>
-        <head>
-            <title>Codeland Admin Portal</title>
-            <style>
-                body { font-family: sans-serif; background: #07090e; color: #fff; padding: 3rem; }
-                table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
-                th, td { border: 1px solid #1e293b; padding: 14px; text-align: left; }
-                th { background: #0d111a; color: #dfcaa7; }
-            </style>
-            <script>
-                function approvePayment(id) {
-                    fetch('/api/approve-payment', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ id: id })
-                    }).then(() => window.location.reload());
-                }
-
-                // Bulletproof converter logic to open massive base64 strings safely in a new tab without URI_TOO_LONG errors
-                function openBlobImage(encodedData) {
-                    if(!encodedData) return;
-                    const dataURI = decodeURIComponent(encodedData);
-                    
-                    // Split the dataURI components to extract the pure raw base64 string bytes
-                    const byteString = atob(dataURI.split(',')[1]);
-                    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-                    
-                    // Allocate system array buffers to process binary chunks locally
-                    const ab = new ArrayBuffer(byteString.length);
-                    const ia = new Uint8Array(ab);
-                    for (let i = 0; i < byteString.length; i++) {
-                        ia[i] = byteString.charCodeAt(i);
+        res.send(`
+            <html>
+            <head>
+                <title>Codeland Admin Portal</title>
+                <style>
+                    body { font-family: sans-serif; background: #07090e; color: #fff; padding: 3rem; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+                    th, td { border: 1px solid #1e293b; padding: 14px; text-align: left; }
+                    th { background: #0d111a; color: #dfcaa7; }
+                </style>
+                <script>
+                    function approvePayment(id) {
+                        fetch('/api/approve-payment', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ id: id })
+                        }).then(() => window.location.reload());
                     }
-                    
-                    // Create a direct sandboxed local blob memory allocation object reference url structure mapping
-                    const blob = new Blob([ab], {type: mimeString});
-                    const blobUrl = URL.createObjectURL(blob);
-                    
-                    // Instruct the browser window pipeline engine to cleanly open this direct resource path pointer entry
-                    window.open(blobUrl, '_blank');
-                }
-            </script>
-        </head>
-        <body>
-            <h2 style="color: #dfcaa7;">Codeland Creations — Client Audit Desk</h2>
-            <table>
-                <tr><th>Invoice ID</th><th>Date</th><th>Client Name</th><th>App</th><th>UTR / Ref Number</th><th>Screenshot</th><th>Action Panel</th></tr>
-                ${tableRows || '<tr><td colspan="7" style="text-align:center; color:#636f8a;">No transactions awaiting clearance.</td></tr>'}
-            </table>
-        </body>
-        </html>
-    `);
+                    function openBlobImage(encodedData) {
+                        if(!encodedData) return;
+                        const dataURI = decodeURIComponent(encodedData);
+                        const byteString = atob(dataURI.split(',')[1]);
+                        const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+                        const ab = new ArrayBuffer(byteString.length);
+                        const ia = new Uint8Array(ab);
+                        for (let i = 0; i < byteString.length; i++) { ia[i] = byteString.charCodeAt(i); }
+                        const blob = new Blob([ab], {type: mimeString});
+                        const blobUrl = URL.createObjectURL(blob);
+                        window.open(blobUrl, '_blank');
+                    }
+                </script>
+            </head>
+            <body>
+                <h2 style="color: #dfcaa7;">Codeland Creations — Client Audit Desk</h2>
+                <table>
+                    <tr><th>Invoice ID</th><th>Date</th><th>Client Name</th><th>App</th><th>UTR / Ref Number</th><th>Screenshot</th><th>Action Panel</th></tr>
+                    ${tableRows || '<tr><td colspan="7" style="text-align:center; color:#636f8a;">No transactions awaiting clearance.</td></tr>'}
+                </table>
+            </body>
+            </html>
+        `);
+    } catch (err) {
+        res.status(500).send("Database extraction runtime fault: " + err.message);
+    }
 });
+
 // Trigger Approval state parameter toggles
-app.post('/api/approve-payment', (req, res) => {
-    const order = submissions.find(item => item.id === req.body.id);
-    if (order) order.approved = true;
-    res.json({ success: true });
+app.post('/api/approve-payment', async (req, res) => {
+    try {
+        const database = await connectDB();
+        const collection = database.collection('submissions');
+        
+        await collection.updateOne({ id: req.body.id }, { $set: { approved: true } });
+        res.status(200).json({ success: true });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
 });
+
+
 
 // Production Invoice Template Generator
 app.get('/admin/invoice/:id', (req, res) => {
