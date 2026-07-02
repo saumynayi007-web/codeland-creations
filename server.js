@@ -14,16 +14,33 @@ const upload = multer({ storage: storage });
 
 // Local database state array
 
-const uri = process.env.MONGODB_URI; 
-const client = new MongoClient(uri);
-let db;
+const uri = process.env.MONGODB_URI;
+let cachedClient = null;
+let cachedDb = null;
 
 async function connectDB() {
-    if (!db) {
-        await client.connect();
-        db = client.db('codeland_billing'); // Automatically creates a database named this
-        console.log("Successfully connected to cloud database layer.");
+    // If the database connection instance already exists in runtime memory, return it instantly
+    if (cachedClient && cachedDb) {
+        return cachedDb;
     }
+
+    if (!uri) {
+        throw new Error("Missing MONGODB_URI configuration parameter variable in environment pipeline.");
+    }
+
+    // Set production configuration overrides to prevent connection timing blocks
+    const client = new MongoClient(uri, {
+        maxPoolSize: 10,
+        serverSelectionTimeoutMS: 5000,
+        socketTimeoutMS: 45000,
+    });
+
+    await client.connect();
+    const db = client.db('codeland_billing');
+
+    // Cache the active connection handles globally
+    cachedClient = client;
+    cachedDb = db;
     return db;
 }
 
