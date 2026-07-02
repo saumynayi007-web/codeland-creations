@@ -1452,50 +1452,50 @@
 
 
 
-     async function submitVerification(event) {
+    async function submitVerification(event) {
     event.preventDefault();
     
-    // 1. Collect form input text fields manually (Bypassing the file ceiling entirely)
-    const clientName = document.getElementById('client-name').value;
-    const app = document.getElementById('payment-app').value;
-    const utr = document.getElementById('utr-number').value;
+    // 1. Gather all dynamic field contents into multi-part form payloads
+    const formData = new FormData();
+    formData.append('app', document.getElementById('payment-app').value);
+    formData.append('utr', document.getElementById('utr-number').value);
+    formData.append('screenshot', document.getElementById('screenshot-file').files[0]);
+    formData.append('clientName', document.getElementById('client-name').value);
 
     const container = document.getElementById('pay-step-2');
 
-    // 2. Animate the transition out
+    // 2. Animate the transition layout
     gsap.to(container, { opacity: 0, y: -20, duration: 0.4, onComplete: async () => {
         
         try {
-            // 3. Transmit clean text data purely as JSON structure payload
+            // 3. Transmit to server framework endpoint
             const response = await fetch('/api/verify-payment', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ clientName, app, utr })
+                body: formData // Content-Type updates automatically for dynamic binary form packets
             });
 
             const result = await response.json();
 
             if (response.ok && result.success) {
-                // 4. Success UI Layout Swap
+                // 4. Update interface components to complete message layout
                 container.innerHTML = `
                     <div style="text-align: center; padding: 2rem 0;">
                         <i class="fa-solid fa-circle-check" style="color: #10b981; font-size: 3.5rem; margin-bottom: 1.5rem;"></i>
                         <h4 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #fff; margin-bottom: 0.5rem;">Verification Logged</h4>
-                        <p style="color: var(--text-dim); font-size: 0.95rem; margin-top: 0.5rem;">Data logged safely into MongoDB Atlas! We will clear the pipeline shortly.</p>
+                        <p style="color: var(--text-dim); font-size: 0.95rem; margin-top: 0.5rem;">Receipt saved permanently in MongoDB! We will audit this shortly.</p>
                     </div>
                 `;
             } else {
-                throw new Error(result.error || 'Server rejected the record allocation');
+                throw new Error(result.error || 'Server rejected request pipeline processing');
             }
         } catch (error) {
-            container.innerHTML = `<div style="padding: 2rem; color: #ef4444; text-align: center;">Error: ${error.message}. Please try again.</div>`;
+            container.innerHTML = `<div style="padding: 2rem; color: #ef4444; text-align: center;">Error: Submission execution failed. Please ensure file size is under 3MB.</div>`;
         }
 
-        // 5. Fade the success view back in smoothly
+        // 5. Return display components smoothly
         gsap.to(container, { opacity: 1, y: 0, duration: 0.4 });
     }});
 }
- 
         // Glitch Blocks setup
 const portrait = document.getElementById('portrait-box');
 const glitchData = [[2,-3,22,22],[12,-5,14,10],[28,-2,10,10],[82,22,8,8],[-4,75,16,12],[8,82,10,10],[-2,88,18,16],[56,82,12,14],[70,90,10,10],[42,94,8,6]];
