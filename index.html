@@ -1465,15 +1465,17 @@
     const container = document.getElementById('pay-step-2');
 
     // 2. Animate the transition to loading
-    gsap.to(container, { opacity: 0, y: -20, duration: 0.4, onComplete: async () => {
-        
-        try {
-            // 3. Transmit to the server
-            const response = await fetch('/api/verify-payment', enctype="multipart/form-data", {
-                method: 'POST',
-                body: formData // Note: Do NOT set Content-Type header for FormData
-            });
+   gsap.to(container, { opacity: 0, y: -20, duration: 0.4, onComplete: async () => {
+    
+    try {
+        // 3. Transmit to the server (Cleaned up arguments)
+        const response = await fetch('/api/verify-payment', {
+            method: 'POST',
+            body: formData // Note: Do NOT set Content-Type header for FormData
+        });
 
+        const result = await response.json();
+       
             if (response.ok) {
                 // 4. Success UI
                 container.innerHTML = `
