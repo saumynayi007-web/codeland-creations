@@ -133,13 +133,9 @@ app.post('/api/approve-payment', async (req, res) => {
 
 
 // Production Invoice Template Generator
-app.get('/admin/invoice/:id', async (req, res) => {
-    try {
-        const database = await connectDB();
-        const collection = database.collection('submissions');
-        const order = await collection.findOne({ id: req.params.id });
-        
-        if (!order || !order.approved) return res.status(404).send("Invoice missing or verification pending clearance.");
+app.get('/admin/invoice/:id', (req, res) => {
+    const order = submissions.find(item => item.id === req.params.id);
+    if (!order || !order.approved) return res.status(404).send("Invoice missing or verification pending clearance.");
 
     res.send(`
         <html>
@@ -198,9 +194,6 @@ app.get('/admin/invoice/:id', async (req, res) => {
         </body>
         </html>
     `);
-    } catch (err) {
-        res.status(500).send("Database Error: " + err.message);
-    }
 });
 
 // Legal documents and listen blocks...

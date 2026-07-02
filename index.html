@@ -1452,45 +1452,46 @@
 
 
 
-       async function submitVerification(event) {
+     async function submitVerification(event) {
     event.preventDefault();
     
-    // 1. Gather all data including the file
-    const formData = new FormData();
-    formData.append('app', document.getElementById('payment-app').value);
-    formData.append('utr', document.getElementById('utr-number').value);
-    formData.append('screenshot', document.getElementById('screenshot-file').files[0]);
-    formData.append('clientName', document.getElementById('client-name').value);
+    // 1. Collect form input text fields manually (Bypassing the file ceiling entirely)
+    const clientName = document.getElementById('client-name').value;
+    const app = document.getElementById('payment-app').value;
+    const utr = document.getElementById('utr-number').value;
 
     const container = document.getElementById('pay-step-2');
 
-    // 2. Animate the transition to loading
+    // 2. Animate the transition out
     gsap.to(container, { opacity: 0, y: -20, duration: 0.4, onComplete: async () => {
         
         try {
-            // 3. Transmit to the server
+            // 3. Transmit clean text data purely as JSON structure payload
             const response = await fetch('/api/verify-payment', {
                 method: 'POST',
-                body: formData // Note: Do NOT set Content-Type header for FormData
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ clientName, app, utr })
             });
 
-            if (response.ok) {
-                // 4. Success UI
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                // 4. Success UI Layout Swap
                 container.innerHTML = `
                     <div style="text-align: center; padding: 2rem 0;">
                         <i class="fa-solid fa-circle-check" style="color: #10b981; font-size: 3.5rem; margin-bottom: 1.5rem;"></i>
-                        <h4 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #fff; margin-bottom: 0.5rem;">Receipt Received</h4>
-                        <p style="color: var(--text-dim); font-size: 0.95rem; margin-top: 0.5rem;">Your payment is under audit. We will clear the pipeline shortly.</p>
+                        <h4 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #fff; margin-bottom: 0.5rem;">Verification Logged</h4>
+                        <p style="color: var(--text-dim); font-size: 0.95rem; margin-top: 0.5rem;">Data logged safely into MongoDB Atlas! We will clear the pipeline shortly.</p>
                     </div>
                 `;
             } else {
-                throw new Error('Server rejected the upload');
+                throw new Error(result.error || 'Server rejected the record allocation');
             }
         } catch (error) {
-            container.innerHTML = `<div style="padding: 2rem; color: #ef4444;">Error: Could not connect to audit desk. Please try again.</div>`;
+            container.innerHTML = `<div style="padding: 2rem; color: #ef4444; text-align: center;">Error: ${error.message}. Please try again.</div>`;
         }
 
-        // 5. Fade back in
+        // 5. Fade the success view back in smoothly
         gsap.to(container, { opacity: 1, y: 0, duration: 0.4 });
     }});
 }
