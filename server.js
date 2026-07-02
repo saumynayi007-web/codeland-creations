@@ -24,10 +24,12 @@ async function connectDB() {
     
     const client = new MongoClient(uri, {
         maxPoolSize: 10,
-        serverSelectionTimeoutMS: 5000
+        serverSelectionTimeoutMS: 5000,
+        ssl: true, // Forces TLS layer explicitly
+        tlsAllowInvalidCertificates: false // Ensures proper secure strict handshakes
     });
-
-  await client.connect();
+    
+    await client.connect();
     const db = client.db('codeland_billing');
     cachedClient = client;
     cachedDb = db;
