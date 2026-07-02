@@ -25,7 +25,7 @@ app.post('/api/verify-payment', upload.single('screenshot'), (req, res) => {
     let screenshotDataUrl = null;
 
     if (req.file) {
-        // Formats the image into a browser-readable Base64 Data URL string
+        // Convert buffer to base64 string
         const base64Image = req.file.buffer.toString('base64');
         screenshotDataUrl = `data:${req.file.mimetype};base64,${base64Image}`;
     }
@@ -35,7 +35,7 @@ app.post('/api/verify-payment', upload.single('screenshot'), (req, res) => {
         clientName: req.body.clientName || "Valued Client",
         appUsed: req.body.app,
         utrNumber: req.body.utr,
-        screenshotPath: screenshotDataUrl, // Saves the entire image as simple text string data
+        screenshotPath: screenshotDataUrl, 
         submittedAt: new Date().toLocaleDateString('en-IN'),
         approved: false
     };
@@ -48,6 +48,9 @@ app.post('/api/verify-payment', upload.single('screenshot'), (req, res) => {
 app.get('/admin/proofs', (req, res) => {
     let tableRows = '';
     submissions.forEach(item => {
+        // We escape the string values safely to ensure long strings don't crash HTML rendering parsing
+        const safeDataString = item.screenshotPath ? encodeURIComponent(item.screenshotPath) : '';
+
         tableRows += `
             <tr>
                 <td>${item.id}</td>
@@ -55,7 +58,12 @@ app.get('/admin/proofs', (req, res) => {
                 <td>${item.clientName}</td>
                 <td>${item.appUsed}</td>
                 <td style="font-weight: bold; color: #dfcaa7;">${item.utrNumber}</td>
-                <td><a href="${item.screenshotPath}" target="_blank"><img src="/${item.screenshotPath}" width="80"></a></td>
+                <td>
+                    ${item.screenshotPath ? 
+                        `<button onclick="openBlobImage('${safeDataString}')" style="background:#1e293b; color:#dfcaa7; border:1px solid #dfcaa7; padding:6px 12px; cursor:pointer; border-radius:4px; font-weight:bold;">👁️ View Proof</button>` : 
+                        `<span style="color:#636f8a;">No Image</span>`
+                    }
+                </td>
                 <td>
                     ${item.approved ? 
                         `<a href="/admin/invoice/${item.id}" target="_blank" style="color: #10b981; text-decoration:none; font-weight:bold;">📄 View Active Bill</a>` : 
@@ -74,7 +82,6 @@ app.get('/admin/proofs', (req, res) => {
                 table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
                 th, td { border: 1px solid #1e293b; padding: 14px; text-align: left; }
                 th { background: #0d111a; color: #dfcaa7; }
-                img { border-radius: 4px; }
             </style>
             <script>
                 function approvePayment(id) {
@@ -83,6 +90,30 @@ app.get('/admin/proofs', (req, res) => {
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ id: id })
                     }).then(() => window.location.reload());
+                }
+
+                // Bulletproof converter logic to open massive base64 strings safely in a new tab without URI_TOO_LONG errors
+                function openBlobImage(encodedData) {
+                    if(!encodedData) return;
+                    const dataURI = decodeURIComponent(encodedData);
+                    
+                    // Split the dataURI components to extract the pure raw base64 string bytes
+                    const byteString = atob(dataURI.split(',')[1]);
+                    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+                    
+                    // Allocate system array buffers to process binary chunks locally
+                    const ab = new ArrayBuffer(byteString.length);
+                    const ia = new Uint8Array(ab);
+                    for (let i = 0; i < byteString.length; i++) {
+                        ia[i] = byteString.charCodeAt(i);
+                    }
+                    
+                    // Create a direct sandboxed local blob memory allocation object reference url structure mapping
+                    const blob = new Blob([ab], {type: mimeString});
+                    const blobUrl = URL.createObjectURL(blob);
+                    
+                    // Instruct the browser window pipeline engine to cleanly open this direct resource path pointer entry
+                    window.open(blobUrl, '_blank');
                 }
             </script>
         </head>
@@ -96,7 +127,6 @@ app.get('/admin/proofs', (req, res) => {
         </html>
     `);
 });
-
 // Trigger Approval state parameter toggles
 app.post('/api/approve-payment', (req, res) => {
     const order = submissions.find(item => item.id === req.body.id);
