@@ -15,6 +15,14 @@ app.use(express.static(__dirname));
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
+
+app.get('/logo.jpg', (req, res) => {
+    res.sendFile(path.join(__dirname, 'logo.jpg'));
+});
+
+app.get('/favicon.png', (req, res) => {
+    res.sendFile(path.join(__dirname, 'favicon.png'));
+});
 if (!fs.existsSync('/tmp/uploads')) {
     fs.mkdirSync('/tmp/uploads', { recursive: true });
 }
