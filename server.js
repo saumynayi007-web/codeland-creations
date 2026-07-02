@@ -91,8 +91,9 @@ app.get('/admin/proofs', async (req, res) => {
                     </td>
                     <td>
                         ${item.approved ? 
-                            `<span style="color: #10b981; font-weight:bold;">📄 Approved</span>` : 
-                            `<button onclick="approvePayment('${item.id}')" style="background:#dfcaa7; border:none; padding:6px 12px; font-weight:bold; cursor:pointer; border-radius:4px;">Approve</button>`
+                            /* FIXED: Restored the actual clickable invoice link button right here */
+                            `<a href="/admin/invoice/${item.id}" target="_blank" style="background:#10b981; color:#fff; text-decoration:none; padding:6px 12px; font-weight:bold; border-radius:4px; display:inline-block; font-size:0.9rem;">📄 View Active Bill</a>` : 
+                            `<button onclick="approvePayment('${item.id}')" style="background:#dfcaa7; color:#07090e; border:none; padding:6px 12px; font-weight:bold; cursor:pointer; border-radius:4px;">Approve & Bill</button>`
                         }
                     </td>
                 </tr>`;
@@ -149,13 +150,23 @@ app.post('/api/approve-payment', async (req, res) => {
     try {
         const database = await connectDB();
         const collection = database.collection('submissions');
-        await collection.updateOne({ id: req.body.id }, { $set: { approved: true } });
+        
+        // Find the record by its string ID and flip approved to true in the cloud collection
+        const result = await collection.updateOne(
+            { id: req.body.id }, 
+            { $set: { approved: true } }
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ success: false, error: "Invoice record mismatch" });
+        }
+        
         res.status(200).json({ success: true });
     } catch (err) {
+        console.error("Approval system error:", err);
         res.status(500).json({ success: false, error: err.message });
     }
 });
-
 
 // Production Invoice Template Generator
 app.get('/admin/invoice/:id', async (req, res) => {
