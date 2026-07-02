@@ -1469,7 +1469,7 @@
         
         try {
             // 3. Transmit to the server
-            const response = await fetch('/api/verify-payment', {
+            const response = await fetch('/api/verify-payment', enctype="multipart/form-data", {
                 method: 'POST',
                 body: formData // Note: Do NOT set Content-Type header for FormData
             });
