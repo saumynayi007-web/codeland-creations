@@ -395,488 +395,254 @@
 
 
         /* --- Premium Bento Box Layout --- */
-
         .services-section {
-
-            padding: 10rem 10%;
-
-            max-width: 1600px;
-
+            padding: clamp(6rem, 8vw, 10rem) 8%;
+            max-width: var(--hero-max-width);
             margin: 0 auto;
-
         }
-
-
 
         .section-header {
-
-            margin-bottom: 5rem;
-
+            margin-bottom: clamp(3rem, 5vw, 5rem);
         }
-
-
 
         .section-label {
-
             color: var(--gold-muted);
-
             text-transform: uppercase;
-
             letter-spacing: 3px;
-
             font-size: 0.85rem;
-
             margin-bottom: 1rem;
-
             display: block;
-
         }
-
-
 
         .section-title {
-
             font-family: 'Playfair Display', serif;
-
             font-size: clamp(2rem, 4vw, 3.5rem);
-
             font-weight: 400;
-
         }
-
-
 
         .bento-grid {
-
             display: grid;
-
             grid-template-columns: repeat(3, 1fr);
-
             gap: 2rem;
-
         }
-
-
 
         .bento-card {
-
             background: var(--card-bg);
-
             border: 1px solid var(--border-color);
-
-            padding: 3.5rem;
-
+            padding: clamp(2rem, 3.5vw, 3.5rem);
             border-radius: 16px;
-
             position: relative;
-
             transition: background 0.4s, border-color 0.4s, transform 0.4s;
-
             display: flex;
-
             flex-direction: column;
-
             justify-content: space-between;
-
-            min-height: 380px;
-
+            min-height: clamp(320px, 25vw, 380px);
         }
-
-
 
         .bento-card::before {
-
             content: '';
-
             position: absolute;
-
             top: 0; left: 0; width: 100%; height: 100%;
-
             border-radius: 16px;
-
             background: radial-gradient(800px circle at var(--x, 0px) var(--y, 0px), rgba(223, 202, 167, 0.04), transparent 40%);
-
             pointer-events: none;
-
         }
-
-
 
         .bento-card:hover {
-
             background: var(--card-hover);
-
             border-color: var(--border-hover);
-
             transform: translateY(-4px);
-
         }
-
-
 
         .card-num {
-
             font-family: 'Playfair Display', serif;
-
             font-size: 1.5rem;
-
             color: var(--gold-muted);
-
             font-style: italic;
-
         }
-
-
 
         .bento-card h3 {
-
-            font-size: 1.8rem;
-
+            font-size: clamp(1.4rem, 2vw, 1.8rem);
             font-weight: 400;
-
             margin-bottom: 1rem;
-
             color: #fff;
-
             letter-spacing: -0.5px;
-
         }
-
-
 
         .bento-card p {
-
             color: var(--text-dim);
-
-            font-size: 1.05rem;
-
+            font-size: clamp(0.95rem, 1.1vw, 1.05rem);
         }
-
-
 
         .span-2 {
-
             grid-column: span 2;
-
         }
-
-
 
         /* --- Verification & Checkout Dashboard --- */
-
         .checkout-section {
-
-            padding: 8rem 10%;
-
+            padding: clamp(5rem, 7vw, 8rem) 8%;
             background: #090c12;
-
             border-top: 1px solid var(--border-color);
-
             display: flex;
-
             justify-content: center;
-
         }
-
-
 
         .payment-container {
-
             width: 100%;
-
             max-width: 600px;
-
             background: var(--card-bg);
-
             border: 1px solid var(--border-color);
-
-            padding: 4rem;
-
+            padding: clamp(2rem, 4vw, 4rem);
             border-radius: 24px;
-
             text-align: center;
-
         }
-
-
 
         .price-tag {
-
             font-family: 'Playfair Display', serif;
-
             font-size: clamp(3rem, 5vw, 4.5rem);
-
             color: var(--gold-bright);
-
             margin: 2rem 0;
-
             font-weight: 400;
-
         }
-
-
 
         .pay-btn {
-
             width: 100%;
-
             background: var(--gold-bright);
-
             color: var(--bg-dark);
-
             border: none;
-
             padding: 1.4rem;
-
             font-size: 0.9rem;
-
             font-weight: 700;
-
             text-transform: uppercase;
-
             letter-spacing: 2px;
-
             cursor: pointer;
-
             border-radius: 50px;
-
             transition: background 0.3s, transform 0.2s;
-
         }
 
-.diagram-label { 
-    cursor: pointer; 
-    transition: font-weight 0.25s, opacity 0.3s; 
-    white-space: nowrap; 
-    font-size: clamp(0.9rem, 2vw, 1.2rem); 
-    pointer-events: auto; /* Ensures labels catch mouse events */
-    user-select: none;
-}
-.line-spoke {
-    stroke: white;
-    stroke-width: 0.18;
-    opacity: 0.45;
-    transition: all 0.3s ease; /* Let CSS handle the smoothness */
-}
-
-.line-spoke.active {
-    stroke-width: 0.8;
-    opacity: 1;
-}
         .pay-btn:hover {
-
             background: #fff;
-
             transform: scale(1.02);
-
         }
 
+        .diagram-label { 
+            cursor: pointer; 
+            transition: font-weight 0.25s, opacity 0.3s; 
+            white-space: nowrap; 
+            font-size: clamp(0.9rem, 2vw, 1.2rem); 
+            pointer-events: auto;
+            user-select: none;
+        }
 
+        .line-spoke {
+            stroke: white;
+            stroke-width: 0.18;
+            opacity: 0.45;
+            transition: all 0.3s ease;
+        }
 
+        .line-spoke.active {
+            stroke-width: 0.8;
+            opacity: 1;
+        }
+
+        .branding-section { 
+            background: #0f0f0f; 
+            color: #fff; 
+            padding: clamp(5rem, 8vw, 100px) 8%; 
+            overflow: hidden; 
+        }
+
+        .glitch-block { position: absolute; background: white; }
+
+        /* --- UNIVERSAL MEDIA RESPONSIVENESS LAYER --- */
+        
+        /* 💻 LAPTOP/DESK EXTRA MAPPING */
+        @media (max-width: 1440px) {
+            .hero { padding: 0 8%; }
+        }
+
+        /* 💻 STANDARD PORTABLE LAPTOPS & DESKTOP SCREEN COMPACTS */
+        @media (max-width: 1200px) {
+            .bento-grid { gap: 1.5rem; }
+            header { padding: 1.2rem 2rem; }
+            .nav-links { gap: 1.8rem; }
+        }
+
+        /* 📟 TABLET VIEWPORTS DESIGN CORRECTIONS */
         @media (max-width: 1024px) {
-
-            .bento-grid { grid-template-columns: 1fr; }
-
-            .span-2 { grid-column: span 1; }
-
-            .hero { padding: 0 5%; }
-
-            .services-section { padding: 6rem 5%; }
-
+            .bento-grid { 
+                grid-template-columns: repeat(2, 1fr) !important; 
+            }
+            .span-2 { 
+                grid-column: span 2 !important; 
+            }
+            #contact {
+                grid-template-columns: 1fr !important;
+                gap: 50px;
+            }
+            .site-footer__top {
+                grid-template-columns: 1fr 1fr;
+            }
+            .site-footer__heading {
+                grid-column: 1 / -1;
+            }
         }
 
-        .branding-section { background: #0f0f0f; color: #fff; padding: 100px 10%; overflow: hidden; }
-.glitch-block { position: absolute; background: white; }
-.diagram-label { cursor: pointer; transition: font-weight 0.25s, opacity 0.3s; white-space: nowrap; font-size: clamp(1.25rem, 2.8vw, 2.4rem); }
-.line-spoke { transition: stroke-width 0.3s, opacity 0.3s; }
-   
-:root {
-        --hero-max-width: 1820px;
-    }
-
-    .site-footer {
-        position: relative;
-        z-index: 100;
-        overflow: hidden;
-        background: #000000;
-        color: #ffffff;
-        font-family: "Geist", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        -webkit-font-smoothing: antialiased;
-        text-rendering: geometricPrecision;
-    }
-
-    .site-footer a {
-        color: inherit;
-        text-decoration: none;
-    }
-
-    /* ANIMATED DOTS STRIP */
-    .footer-dots {
-        position: relative;
-        height: 120px;
-        overflow: hidden;
-        background: #000000;
-    }
-
-    .footer-dots__line {
-        position: absolute;
-        left: 0;
-        top: 50%;
-        width: 200%;
-        height: 70px;
-        opacity: 0.75;
-        transform: translateY(-50%);
-        background-image: 
-            radial-gradient(circle, rgb(255 255 255 / 0.55) 1.5px, transparent 2px),
-            radial-gradient(circle, rgb(255 255 255 / 0.35) 1px, transparent 1.5px),
-            radial-gradient(circle, rgb(255 255 255 / 0.45) 1.2px, transparent 1.8px);
-        background-position: 0 8px, 24px 22px, 48px 14px;
-        background-size: 72px 38px, 110px 44px, 160px 52px;
-        animation: footerDotsMove 18s linear infinite;
-    }
-
-    @keyframes footerDotsMove {
-        from { transform: translate3d(0, -50%, 0); }
-        to   { transform: translate3d(-50%, -50%, 0); }
-    }
-
-    /* FOOTER INNER WRAPPER */
-    .site-footer__inner {
-        width: min(100% - 96px, var(--hero-max-width));
-        margin: 0 auto;
-        padding: clamp(34px, 4vw, 66px) 0 clamp(18px, 2vw, 34px);
-    }
-
-    /* NAV & HEADER TOP GRID */
-    .site-footer__top {
-        display: grid;
-        grid-template-columns: minmax(320px, 1.25fr) repeat(3, minmax(150px, 0.42fr));
-        gap: clamp(28px, 4vw, 76px);
-        min-height: clamp(220px, 24vw, 330px);
-    }
-
-    .site-footer__heading {
-        max-width: 680px;
-        margin: 0;
-        color: #ffffff;
-        font-size: clamp(34px, 3.5vw, 62px);
-        font-weight: 220;
-        letter-spacing: 0;
-        line-height: 1.06;
-    }
-
-    .site-footer__nav {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: clamp(14px, 1.35vw, 22px);
-    }
-
-    .site-footer__link {
-        color: rgb(255 255 255 / 0.88);
-        font-size: 16px;
-        font-weight: 650;
-        line-height: 1.1;
-        transition: color 180ms ease, transform 180ms ease;
-    }
-
-    .site-footer__link:hover {
-        color: #ffffff;
-        transform: translateX(3px);
-    }
-
-    /* OVERSIZED BRAND ROW */
-    .site-footer__brand-row {
-        width: 100%;
-        margin-top: clamp(18px, 3vw, 46px);
-    }
-
-    .site-footer__brand {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        color: #ffffff;
-    }
-
-.site-footer__mark {
-    position: relative;
-    flex: 0 0 clamp(40px, 4.5vw, 70px);
-    aspect-ratio: 1;
-    margin-right: clamp(12px, 1.2vw, 20px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-    .site-footer__wordmark {
-        display: block;
-        flex: 1 1 auto;
-        min-width: 0;
-        font-size: clamp(58px, 11.1vw, 214px);
-        font-weight: 760;
-        letter-spacing: -0.055em;
-        line-height: 0.78;
-        white-space: nowrap;
-        color:navajowhite;
-    }
-
-    /* LEGAL SECTION */
-    .site-footer__legal {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        gap: 8px 18px;
-        margin-top: clamp(14px, 1.4vw, 24px);
-        color: rgb(255 255 255 / 0.52);
-        font-size: 9px;
-        line-height: 1.35;
-    }
-
-    .site-footer__legal p {
-        margin: 0;
-    }
-
-    .site-footer__legal a {
-        color: inherit;
-        transition: color 0.3s;
-    }
-
-    .site-footer__legal a:hover {
-        color: #ffffff;
-    }
-
-    /* RESPONSIVE MEDIA TARGETS */
-    @media (max-width: 980px) {
-        .site-footer__inner {
-            width: min(100% - 48px, var(--hero-max-width));
+        /* 📟 PHABLETS / LARGE HANDSET CONFIGURATIONS */
+        @media (max-width: 768px) {
+            header {
+                top: 15px;
+                width: calc(100% - 30px);
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem 1.5rem;
+                border-radius: 20px;
+            }
+            .nav-links {
+                gap: 1.2rem;
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            .nav-links a {
+                font-size: 0.8rem;
+                letter-spacing: 1px;
+            }
+            .bento-grid { 
+                grid-template-columns: 1fr !important; 
+            }
+            .span-2 { 
+                grid-column: span 1 !important; 
+            }
+            .branding-section > div > div:last-child {
+                flex-direction: column !important;
+                align-items: center !important;
+            }
+            #portrait-box {
+                width: 100% !important;
+                max-width: 380px;
+                height: 380px !important;
+            }
+            #diagram-container {
+                width: 100% !important;
+                max-width: 340px;
+                margin-top: 3rem;
+            }
+            .diagram-label {
+                font-size: clamp(0.85rem, 2.5vw, 1.1rem) !important;
+            }
         }
-        .site-footer__top {
-            grid-template-columns: 1fr 1fr;
-        }
-        .site-footer__heading {
-            grid-column: 1 / -1;
-        }
-    }
 
-    @media (max-width: 560px) {
-        .site-footer__inner {
-            width: min(100% - 32px, var(--hero-max-width));
+        /* 📱 SMARTPHONES (STANDARD PORTRAIT VIEWPORTS) */
+        @media (max-width: 480px) {
+            body { -webkit-text-size-adjust: 100%; }
+            .hero h1 { line-height: 1.2; }
+            .bento-card { padding: 1.8rem; min-height: 280px; }
+            #contact-form { padding: 30px 20px; }
+            .site-footer__top { grid-template-columns: 1fr; }
+            .site-footer__wordmark { font-size: clamp(45px, 16vw, 84px); }
         }
-        .site-footer__top {
-            grid-template-columns: 1fr;
-            min-height: auto;
-        }
-        .site-footer__link {
-            font-size: 15px;
-        }
-        .site-footer__mark {
-            flex-basis: clamp(38px, 12vw, 58px);
-        }
-        .site-footer__wordmark {
-            font-size: clamp(45px, 18vw, 84px);
-        }
-    }   
-   
 </style>
 
 </head>
