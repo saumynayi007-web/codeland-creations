@@ -64,27 +64,14 @@ app.post('/api/verify-payment', async (req, res) => {
     }
 });
 
-// 1. SIMPLE PASSWORD PROTECTION MIDDLEWARE
-const ADMIN_PASSWORD = "Saumy_Manav_Codeland"; // 👈 Set your secret admin access password here!
+const ADMIN_PASSWORD = "ChooseYourSecretPassword123"; // 👈 Change this to your real secret password!
 
 function requireAdminAuth(req, res, next) {
-    // Look for a special custom password code inside the website URL query parameters
     if (req.query.pass === ADMIN_PASSWORD) {
-        return next(); // Password matches! Let them view the admin page
+        return next();
     }
-    // If the password is wrong or missing, block access completely
-    res.status(403).send("<h1>Access Denied</h1><p>Unauthorized terminal entry. Security protocols active.</p>");
+    res.status(403).send("<h1 style='color:#ef4444; font-family:sans-serif;'>Access Denied</h1><p style='color:#636f8a; font-family:sans-serif;'>Unauthorized terminal entry. Security protocols active.</p>");
 }
-
-// 2. PROTECT THE DASHBOARD ROUTE WITH THE MIDDLEWARE
-app.get('/admin/proofs', requireAdminAuth, async (req, res) => {
-    // ... all your existing MongoDB collection finding and table rendering code stays here ...
-});
-
-// 3. PROTECT THE INVOICE ROUTE WITH THE MIDDLEWARE
-app.get('/admin/invoice/:id', requireAdminAuth, async (req, res) => {
-    // ... all your existing invoice code stays here ...
-});
 
 // Admin Panel showing incoming logs with live invoice compilation controls
 app.get('/admin/proofs', async (req, res) => {
