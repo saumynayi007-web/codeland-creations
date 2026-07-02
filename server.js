@@ -163,17 +163,27 @@ app.get('/admin/invoice/:id', async (req, res) => {
         const database = await connectDB();
         const collection = database.collection('submissions');
 
-        // Query the database directly for the dynamic invoice ID matching the URL parameter
+        // Extract the invoice using a clean query selector targeting your string format ID
         const order = await collection.findOne({ id: req.params.id });
 
-        if (!order || !order.approved) {
-            return res.status(404).send("Invoice missing or verification pending clearance.");
+        // If no match is found, or it's not approved, exit cleanly with a 404 text message instead of a 500 crash
+        if (!order) {
+            return res.status(404).send("Invoice completely missing from cloud database records.");
         }
+        if (!order.approved) {
+            return res.status(403).send("Verification pending clearance. Please approve the payment first.");
+        }
+
+        // Defensive code parsing variables to prevent rendering breaks
+        const invoiceId = order.id || 'INV-UNKNOWN';
+        const clientName = order.clientName || 'Valued Client';
+        const submittedAt = order.submittedAt || new Date().toLocaleDateString('en-IN');
+        const utrNumber = order.utrNumber || 'N/A';
 
         res.send(`
             <html>
             <head>
-                <title>Invoice ${order.id}</title>
+                <title>Invoice ${invoiceId}</title>
                 <style>
                     body { font-family: 'Segoe UI', sans-serif; color: #333; padding: 40px; background: #fff; }
                     .invoice-box { max-width: 800px; margin: auto; border: 1px solid #eee; padding: 30px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.05); }
@@ -198,13 +208,13 @@ app.get('/admin/invoice/:id', async (req, res) => {
                         </div>
                         <div style="text-align: right;">
                             <h1 style="margin:0; font-weight:300; color:#999;">INVOICE</h1>
-                            <p style="margin:5px 0 0 0; font-weight:bold;">${order.id}</p>
+                            <p style="margin:5px 0 0 0; font-weight:bold;">${invoiceId}</p>
                         </div>
                     </div>
                     <table class="meta-table">
                         <tr>
-                            <td><strong>Billed To:</strong><br>${order.clientName}</td>
-                            <td style="text-align:right;"><strong>Date:</strong> ${order.submittedAt}<br><strong>UTR Ref:</strong> ${order.utrNumber}</td>
+                            <td><strong>Billed To:</strong><br>${clientName}</td>
+                            <td style="text-align:right;"><strong>Date:</strong> ${submittedAt}<br><strong>UTR Ref:</strong> ${utrNumber}</td>
                         </tr>
                     </table>
                     <table class="items-table">
@@ -227,7 +237,8 @@ app.get('/admin/invoice/:id', async (req, res) => {
             </html>
         `);
     } catch (err) {
-        res.status(500).send("Invoice rendering database error: " + err.message);
+        console.error("Invoice Error Log:", err);
+        res.status(500).send("Internal server layout rendering error occurred.");
     }
 });
 
