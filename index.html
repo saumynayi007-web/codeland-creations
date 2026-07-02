@@ -1427,15 +1427,48 @@
     const app = document.getElementById('payment-app').value;
     const utr = document.getElementById('utr-number').value;
     const fileInput = document.getElementById('screenshot-file').files[0];
-
     const container = document.getElementById('pay-step-2');
 
-    // Simple helper to turn the file into a text string right in the browser
-    const convertToBase64 = (file) => {
+    // High-performance local image downscaler & compressor
+    const compressImage = (file) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+
+                    // Max resolution boundary rule (Resize if width/height is over 1200px)
+                    const MAX_WIDTH = 1200;
+                    const MAX_HEIGHT = 1200;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Convert to standard JPEG format at 70% quality compression ratio
+                    // This instantly shrinks a 6MB raw file down to ~400KB while keeping text legible
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    resolve(dataUrl);
+                };
+            };
             reader.onerror = (error) => reject(error);
         });
     };
@@ -1444,11 +1477,11 @@
         try {
             let compiledImageString = null;
             if (fileInput) {
-                // Compile the image into text right here in the browser window
-                compiledImageString = await convertToBase64(fileInput);
+                // Compress the mobile screenshot locally right in the browser memory
+                compiledImageString = await compressImage(fileInput);
             }
 
-            // Transmit as pure, standard JSON text data (Vercel won't strip this!)
+            // Transmit the safe, lightweight payload
             const response = await fetch('/api/verify-payment', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -1462,14 +1495,14 @@
                     <div style="text-align: center; padding: 2rem 0;">
                         <i class="fa-solid fa-circle-check" style="color: #10b981; font-size: 3.5rem; margin-bottom: 1.5rem;"></i>
                         <h4 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #fff; margin-bottom: 0.5rem;">Receipt Received</h4>
-                        <p style="color: var(--text-dim); font-size: 0.95rem; margin-top: 0.5rem;">Your payment proof is logged safely into MongoDB Atlas 24/7.</p>
+                        <p style="color: var(--text-dim); font-size: 0.95rem; margin-top: 0.5rem;">Your compressed payment proof is logged safely into MongoDB Atlas.</p>
                     </div>
                 `;
             } else {
-                throw new Error(result.error || 'Server rejected the transaction');
+                throw new Error(result.error || 'Server rejected the transaction allocation');
             }
         } catch (error) {
-            container.innerHTML = `<div style="padding: 2rem; color: #ef4444; text-align: center;">Error: Verification log dropped. Reduce screenshot resolution/file size and retry.</div>`;
+            container.innerHTML = `<div style="padding: 2rem; color: #ef4444; text-align: center;">Error: Verification log dropped. Try capturing a cleaner screenshot or check network connection.</div>`;
         }
 
         gsap.to(container, { opacity: 1, y: 0, duration: 0.4 });
