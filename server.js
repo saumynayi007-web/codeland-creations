@@ -8,8 +8,9 @@ const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '.')));
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use(express.static(path.join(__dirname, '.')));
 
 // Local database state array
 
@@ -23,11 +24,8 @@ async function connectDB() {
     
     const client = new MongoClient(uri, {
         maxPoolSize: 10,
-        serverSelectionTimeoutMS: 5000,
-        ssl: true, // Forces TLS layer explicitly
-        tlsAllowInvalidCertificates: false // Ensures proper secure strict handshakes
+        serverSelectionTimeoutMS: 5000
     });
-    
     await client.connect();
     const db = client.db('codeland_billing');
     cachedClient = client;
@@ -42,17 +40,10 @@ app.get('/favicon.png', (req, res) => res.sendFile(path.join(__dirname, 'favicon
 app.get('/favicon.ico', (req, res) => res.sendFile(path.join(__dirname, 'favicon.png')));
 
 // 2. Updated endpoint that encodes your file into absolute text string payloads
-app.post('/api/verify-payment', upload.single('screenshot'), async (req, res) => {
+app.post('/api/verify-payment', async (req, res) => {
     try {
         const database = await connectDB();
         const collection = database.collection('submissions');
-
-        let screenshotDataUrl = null;
-        if (req.file) {
-            const base64Image = req.file.buffer.toString('base64');
-            screenshotDataUrl = `data:${req.file.mimetype};base64,${base64Image}`;
-        }
-
         const totalCount = await collection.countDocuments();
         
         const data = {
@@ -60,7 +51,7 @@ app.post('/api/verify-payment', upload.single('screenshot'), async (req, res) =>
             clientName: req.body.clientName || "Valued Client",
             appUsed: req.body.app,
             utrNumber: req.body.utr,
-            screenshotPath: screenshotDataUrl, // Back in action!
+            screenshotPath: req.body.screenshotData, // Captures the clean text string directly
             submittedAt: new Date().toLocaleDateString('en-IN'),
             approved: false
         };
@@ -72,6 +63,7 @@ app.post('/api/verify-payment', upload.single('screenshot'), async (req, res) =>
         res.status(500).json({ success: false, error: err.message });
     }
 });
+
 
 // Admin Panel showing incoming logs with live invoice compilation controls
 app.get('/admin/proofs', async (req, res) => {
@@ -91,7 +83,6 @@ app.get('/admin/proofs', async (req, res) => {
                     <td>${item.clientName}</td>
                     <td>${item.appUsed}</td>
                     <td style="font-weight: bold; color: #dfcaa7;">${item.utrNumber}</td>
-                    <!-- RESTORED: Screenshot verification mechanism -->
                     <td>
                         ${item.screenshotPath ? 
                             `<button onclick="openBlobImage('${safeDataString}')" style="background:#1e293b; color:#dfcaa7; border:1px solid #dfcaa7; padding:6px 12px; cursor:pointer; border-radius:4px; font-weight:bold;">👁️ View Proof</button>` : 
@@ -125,8 +116,6 @@ app.get('/admin/proofs', async (req, res) => {
                             body: JSON.stringify({ id: id })
                         }).then(() => window.location.reload());
                     }
-                    
-                    // Crash-proof sandbox local binary compiler url generator
                     function openBlobImage(encodedData) {
                         if(!encodedData) return;
                         const dataURI = decodeURIComponent(encodedData);
@@ -166,7 +155,6 @@ app.post('/api/approve-payment', async (req, res) => {
         res.status(500).json({ success: false, error: err.message });
     }
 });
-
 
 
 // Production Invoice Template Generator
