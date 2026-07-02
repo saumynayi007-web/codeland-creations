@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Keep your billing administration desk completely hidden from public index systems
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: https://codeland-creations.vercel.app/sitemap.xml
