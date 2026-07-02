@@ -8,7 +8,6 @@ const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '.')));
 
-// 1. Switch Multer to memory storage (no hard drive folders required)
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -43,10 +42,16 @@ app.get('/favicon.png', (req, res) => res.sendFile(path.join(__dirname, 'favicon
 app.get('/favicon.ico', (req, res) => res.sendFile(path.join(__dirname, 'favicon.png')));
 
 // 2. Updated endpoint that encodes your file into absolute text string payloads
-app.post('/api/verify-payment', async (req, res) => {
+app.post('/api/verify-payment', upload.single('screenshot'), async (req, res) => {
     try {
         const database = await connectDB();
         const collection = database.collection('submissions');
+
+        let screenshotDataUrl = null;
+        if (req.file) {
+            const base64Image = req.file.buffer.toString('base64');
+            screenshotDataUrl = `data:${req.file.mimetype};base64,${base64Image}`;
+        }
 
         const totalCount = await collection.countDocuments();
         
@@ -55,7 +60,7 @@ app.post('/api/verify-payment', async (req, res) => {
             clientName: req.body.clientName || "Valued Client",
             appUsed: req.body.app,
             utrNumber: req.body.utr,
-            screenshotPath: null, // No files breaking the server
+            screenshotPath: screenshotDataUrl, // Back in action!
             submittedAt: new Date().toLocaleDateString('en-IN'),
             approved: false
         };
@@ -77,6 +82,8 @@ app.get('/admin/proofs', async (req, res) => {
 
         let tableRows = '';
         submissions.forEach(item => {
+            const safeDataString = item.screenshotPath ? encodeURIComponent(item.screenshotPath) : '';
+            
             tableRows += `
                 <tr>
                     <td>${item.id}</td>
@@ -84,7 +91,13 @@ app.get('/admin/proofs', async (req, res) => {
                     <td>${item.clientName}</td>
                     <td>${item.appUsed}</td>
                     <td style="font-weight: bold; color: #dfcaa7;">${item.utrNumber}</td>
-                    <td><span style="color:#636f8a;">Text Only Mode</span></td>
+                    <!-- RESTORED: Screenshot verification mechanism -->
+                    <td>
+                        ${item.screenshotPath ? 
+                            `<button onclick="openBlobImage('${safeDataString}')" style="background:#1e293b; color:#dfcaa7; border:1px solid #dfcaa7; padding:6px 12px; cursor:pointer; border-radius:4px; font-weight:bold;">👁️ View Proof</button>` : 
+                            `<span style="color:#636f8a;">No Image</span>`
+                        }
+                    </td>
                     <td>
                         ${item.approved ? 
                             `<span style="color: #10b981; font-weight:bold;">📄 Approved</span>` : 
@@ -96,13 +109,14 @@ app.get('/admin/proofs', async (req, res) => {
 
         res.send(`
             <html>
-            <head><title>Codeland Admin</title></head>
-            <body style="background: #07090e; color: #fff; font-family: sans-serif; padding: 3rem;">
-                <h2>Codeland Admin Desk (Database Stable Mode)</h2>
-                <table border="1" style="width:100%; border-collapse:collapse;">
-                    <tr><th>ID</th><th>Date</th><th>Client</th><th>App</th><th>UTR</th><th>Image Status</th><th>Action</th></tr>
-                    ${tableRows || '<tr><td colspan="7">No records found.</td></tr>'}
-                </table>
+            <head>
+                <title>Codeland Admin Portal</title>
+                <style>
+                    body { font-family: sans-serif; background: #07090e; color: #fff; padding: 3rem; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+                    th, td { border: 1px solid #1e293b; padding: 14px; text-align: left; }
+                    th { background: #0d111a; color: #dfcaa7; }
+                </style>
                 <script>
                     function approvePayment(id) {
                         fetch('/api/approve-payment', {
@@ -111,7 +125,28 @@ app.get('/admin/proofs', async (req, res) => {
                             body: JSON.stringify({ id: id })
                         }).then(() => window.location.reload());
                     }
+                    
+                    // Crash-proof sandbox local binary compiler url generator
+                    function openBlobImage(encodedData) {
+                        if(!encodedData) return;
+                        const dataURI = decodeURIComponent(encodedData);
+                        const byteString = atob(dataURI.split(',')[1]);
+                        const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+                        const ab = new ArrayBuffer(byteString.length);
+                        const ia = new Uint8Array(ab);
+                        for (let i = 0; i < byteString.length; i++) { ia[i] = byteString.charCodeAt(i); }
+                        const blob = new Blob([ab], {type: mimeString});
+                        const blobUrl = URL.createObjectURL(blob);
+                        window.open(blobUrl, '_blank');
+                    }
                 </script>
+            </head>
+            <body>
+                <h2 style="color: #dfcaa7;">Codeland Creations — Client Audit Desk</h2>
+                <table>
+                    <tr><th>Invoice ID</th><th>Date</th><th>Client Name</th><th>App</th><th>UTR / Ref Number</th><th>Screenshot</th><th>Action Panel</th></tr>
+                    ${tableRows || '<tr><td colspan="7" style="text-align:center; color:#636f8a;">No records found.</td></tr>'}
+                </table>
             </body>
             </html>
         `);
