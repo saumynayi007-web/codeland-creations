@@ -8,9 +8,6 @@ app.use(express.json());
 app.use(express.static('.')); 
 app.use(express.static(path.join(__dirname, '.')));
 
-app.use('/*.png', express.static(path.join(__dirname, '.')));
-app.use('/*.jpg', express.static(path.join(__dirname, '.')));
-app.use('/*.ico', express.static(path.join(__dirname, '.')));
 
 // This correctly maps the URL path "/uploads" to the physical server folder "/tmp/uploads"
 app.use('/uploads', express.static('/tmp/uploads'));
