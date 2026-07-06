@@ -1445,6 +1445,144 @@
     </div>
 </section>
 
+<!-- ── MORPH TEXT BRANDING POST-SECTION ── -->
+<section class="morph-section-wrapper" style="background-color: #07090e; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8rem 1rem; overflow: hidden; position: relative; box-sizing: border-box;">
+
+    <!-- Scoped Hidden Liquid Goo Threshold Filter Matrix -->
+    <svg aria-hidden="true" focusable="false" style="position: absolute; width: 0; height: 0; pointer-events: none;">
+        <defs>
+            <filter id="global-morph-threshold">
+                <!-- Color matrix forces alpha threshold optimization to create liquid-goo blending effects -->
+                <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 25 -9" result="goo" />
+                <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- Morph Word Core Canvas Container Box Layout -->
+    <div class="morph-text-container">
+        <div class="morph-word-rotator">
+            <!-- Word 1: CREATE -->
+            <span class="morph-word w-white" style="animation-delay: 0s;">CREATE</span>
+            <!-- Word 2: DESIGN -->
+            <span class="morph-word w-gold" style="animation-delay: 3s;">DESIGN</span>
+            <!-- Word 3: DEVELOP -->
+            <span class="morph-word w-white" style="animation-delay: 6s;">DEVELOP</span>
+        </div>
+    </div>
+
+    <!-- Optional Premium Typography Subtext Overlay Section -->
+    <p class="morph-subtext">
+        Engineering interfaces that capture reality.
+    </p>
+
+    <!-- EMBEDDED HIGH-PERFORMANCE STYLE ARCHITECTURE GRID -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap');
+
+        .morph-text-container {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(3rem, 12vw, 8rem);
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            filter: url(#global-morph-threshold); /* Connects text directly to the SVG blending asset above */
+            user-select: none;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .morph-word-rotator {
+            position: relative;
+            height: 1.3em;
+            width: 100%;
+            max-width: 15ch;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .morph-word {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            white-space: nowrap;
+            animation-name: global-morph-rotate;
+            animation-duration: 9s; /* Total calculation context loop parameters: interval (3s) * count (3 words) */
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+            animation-fill-mode: both;
+        }
+
+        /* Color Scheme System Variant Alignments */
+        .morph-word.w-white {
+            color: #ffffff;
+            text-shadow: 0 0 40px rgba(255, 255, 255, 0.05);
+        }
+
+        .morph-word.w-gold {
+            color: #dfcaa7; /* Custom Studio Premium Muted Gold Accent */
+            text-shadow: 0 0 40px rgba(223, 202, 167, 0.08);
+        }
+
+        .morph-subtext {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            font-weight: 500;
+            color: #636f8a; /* Deep elegant slate secondary text */
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            margin-top: 2rem;
+            text-align: center;
+            opacity: 0;
+            animation: global-morph-fade-up 1.2s cubic-bezier(0.25, 1, 0.5, 1) 0.6s forwards;
+        }
+
+        /* ── LIQUID BLUR TRANSITION GRAPHICS CALCULATIONS ── */
+        @keyframes global-morph-rotate {
+            0% {
+                opacity: 0;
+                filter: blur(25px);
+                transform: translate(-50%, -50%) scale(0.75);
+            }
+            5% {
+                opacity: 0.6;
+                filter: blur(12px);
+            }
+            15%, 35% {
+                opacity: 1;
+                filter: blur(0px);
+                transform: translate(-50%, -50%) scale(1);
+            }
+            45% {
+                opacity: 0.6;
+                filter: blur(12px);
+            }
+            50%, 100% {
+                opacity: 0;
+                filter: blur(25px);
+                transform: translate(-50%, -50%) scale(1.25);
+            }
+        }
+
+        @keyframes global-morph-fade-up {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</section>
+
 <section id="contact" style="background: #07090e; padding: 120px 10%; color: #fff; border-top: 1px solid var(--border-color);">
     <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;">
         
