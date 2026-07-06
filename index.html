@@ -891,6 +891,7 @@
         <li><a href="#services">Capabilities</a></li>
         <li><a href="#payment">Retainer Portal</a></li>
         <li><a href="#branding-approach">Branding Approach</a></li>
+        <li><a href="#FAQ">FAQ</a></li>
         <li><a href="#contact">Get In Touch</a></li>
     </ul>
 </header>
@@ -1581,6 +1582,273 @@
             }
         }
     </style>
+</section>
+
+
+<!-- ── PREMIUM INTERACTIVE FAQ ACCORDION ARCHITECTURE ── -->
+<section id="FAQ" class="faq-section-wrapper" style="background-color: #07090e; width: 100%; padding: 6rem 1.5rem; position: relative; box-sizing: border-box;">
+    
+    <div class="faq-inner-container">
+        <h2 class="faq-main-title">Frequently Asked Questions</h2>
+        
+        <ul class="faq-accordion-list">
+            
+            <!-- ITEM 1 -->
+            <li class="faq-node">
+                <button class="faq-trigger-btn" aria-expanded="false" onclick="toggleFaqAccordion(this)">
+                    <span class="faq-math-indicator">+</span>
+                    <span class="faq-question-text">What services do you provide at Codeland Creations?</span>
+                    <span class="faq-chevron-arrow"></span>
+                </button>
+                <div class="faq-expand-panel">
+                    <div class="faq-overflow-shield">
+                        <div class="faq-answer-content">
+                            We specialize in high-performance digital experiences, including bespoke web application architectures, complete premium branding design suites, robust data automation pipelines, and advanced interactive asset making.
+                        </div>
+                    </div>
+                </div>
+            </li>
+
+            <!-- ITEM 2 -->
+            <li class="faq-node">
+                <button class="faq-trigger-btn" aria-expanded="false" onclick="toggleFaqAccordion(this)">
+                    <span class="faq-math-indicator">+</span>
+                    <span class="faq-question-text">What is your typical project delivery timeline?</span>
+                    <span class="faq-chevron-arrow"></span>
+                </button>
+                <div class="faq-expand-panel">
+                    <div class="faq-overflow-shield">
+                        <div class="faq-answer-content">
+                            Timelines adapt to the technical complexity of the pipeline. Standard identity branding and landing interface systems generally execute within 2 to 3 weeks, while comprehensive database automations or custom affiliate ecosystems span 4 to 6 weeks.
+                        </div>
+                    </div>
+                </div>
+            </li>
+
+            <!-- ITEM 3 -->
+            <li class="faq-node">
+                <button class="faq-trigger-btn" aria-expanded="false" onclick="toggleFaqAccordion(this)">
+                    <span class="faq-math-indicator">+</span>
+                    <span class="faq-question-text">Are your websites optimized for high performance and mobile traffic?</span>
+                    <span class="faq-chevron-arrow"></span>
+                </button>
+                <div class="faq-expand-panel">
+                    <div class="faq-overflow-shield">
+                        <div class="faq-answer-content">
+                            Performance is embedded natively in our engineering layer. We leverage downscaled hardware-accelerated asset handling loops, client-side canvas compression nodes, and clean-code structures to ensure elite load configurations on mobile viewports.
+                        </div>
+                    </div>
+                </div>
+            </li>
+
+            <!-- ITEM 4 -->
+            <li class="faq-node">
+                <button class="faq-trigger-btn" aria-expanded="false" onclick="toggleFaqAccordion(this)">
+                    <span class="faq-math-indicator">+</span>
+                    <span class="faq-question-text">How do we initiate a project retainer or service cycle?</span>
+                    <span class="faq-chevron-arrow"></span>
+                </button>
+                <div class="faq-expand-panel">
+                    <div class="faq-overflow-shield">
+                        <div class="faq-answer-content">
+                            You can outline your project specs inside the contact form below. Once terms match verification thresholds, processing a secure layout retainer locks down your placement on our developmental roadmap cycle.
+                        </div>
+                    </div>
+                </div>
+            </li>
+
+            <!-- ITEM 5: SCOPE CLARIFICATION -->
+            <li class="faq-node">
+                <button class="faq-trigger-btn" aria-expanded="false" onclick="toggleFaqAccordion(this)">
+                    <span class="faq-math-indicator">+</span>
+                    <span class="faq-question-text">What costs are included in the retainer invoice?</span>
+                    <span class="faq-chevron-arrow"></span>
+                </button>
+                <div class="faq-expand-panel">
+                    <div class="faq-overflow-shield">
+                        <div class="faq-answer-content">
+                            <strong style="color: #dfcaa7; display: block; margin-bottom: 0.5rem; font-family: sans-serif;">Scope Clarification:</strong>
+                            This invoice covers professional architecture and design services only. 
+                            <span style="display: block; margin-top: 0.5rem; opacity: 0.85;">
+                                <strong style="color: #fff;">Note:</strong> Third-party costs, including domain name registration, hosting subscriptions, and premium plugin licenses, are not included in this retainer fee and must be settled separately by the client.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+
+        </ul>
+    </div>
+
+    <!-- FIXED STYLESHEET: CLEAR OF ANY VARIABLE TYPOS -->
+    <style>
+        .faq-inner-container {
+            width: 100%;
+            max-width: 48rem;
+            margin: 0 auto;
+        }
+
+        .faq-main-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 500;
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 3.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .faq-accordion-list {
+            width: 100%;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .faq-node {
+            width: 100%;
+            position: relative;
+            border-bottom: 2px solid #131924;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .faq-node.is-active {
+            border-bottom-color: rgba(223, 202, 167, 0.3);
+        }
+
+        .faq-trigger-btn {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            min-height: 68px;
+            padding: 1.25rem 1rem 1.25rem 3.5rem;
+            position: relative;
+            margin: 0;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            text-align: left;
+            background: transparent;
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            font-weight: 500;
+            color: #636f8a;
+            
+            /* FIXED: Standard Native CSS Border properties directly to avoid typo glitches */
+            border-left: 6px solid #1a2233;
+            
+            transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+            box-sizing: border-box;
+        }
+
+        .faq-trigger-btn:hover {
+            color: #ffffff;
+            border-left-color: rgba(223, 202, 167, 0.5);
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .faq-node.is-active .faq-trigger-btn {
+            border-left-color: #dfcaa7; /* Locks to premium gold */
+            color: #dfcaa7;
+            background-color: rgba(223, 202, 167, 0.04);
+            font-weight: 600;
+        }
+
+        .faq-math-indicator {
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: sans-serif;
+            font-size: 1.6rem;
+            font-weight: 300;
+            line-height: 1;
+            color: #3b475e;
+            transition: all 0.25s ease;
+        }
+
+        .faq-node.is-active .faq-math-indicator {
+            color: #dfcaa7;
+            transform: translateY(-54%) scale(1.1);
+        }
+
+        .faq-chevron-arrow {
+            position: absolute;
+            right: 1.5rem;
+            display: block;
+            width: 8px;
+            height: 8px;
+            border-top: 2px solid #3b475e;
+            border-right: 2px solid #3b475e;
+            transform: rotate(135deg);
+            transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.25s ease;
+        }
+
+        .faq-trigger-btn:hover .faq-chevron-arrow {
+            border-color: #ffffff;
+        }
+
+        .faq-node.is-active .faq-chevron-arrow {
+            transform: rotate(-45deg);
+            border-color: #dfcaa7;
+        }
+
+        .faq-question-text {
+            padding-right: 2rem;
+            line-height: 1.4;
+        }
+
+        .faq-expand-panel {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.3s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.3s ease;
+            border-left: 6px solid #1a2233;
+            box-sizing: border-box;
+        }
+
+        .faq-node.is-active .faq-expand-panel {
+            grid-template-rows: 1fr;
+            border-left-color: #dfcaa7;
+            background-color: rgba(223, 202, 167, 0.04);
+        }
+
+        .faq-overflow-shield {
+            overflow: hidden;
+        }
+
+        .faq-answer-content {
+            padding: 0.25rem 2rem 1.75rem 3.5rem;
+            font-family: sans-serif;
+            font-size: 1rem;
+            line-height: 1.6;
+            font-weight: 400;
+            color: #a3b3cc;
+        }
+    </style>
+
+    <script>
+        function toggleFaqAccordion(buttonElement) {
+            const currentLi = buttonElement.parentElement;
+            const isActive = currentLi.classList.contains('is-active');
+            
+            const allNodes = currentLi.parentElement.querySelectorAll('.faq-node');
+            allNodes.forEach(node => {
+                node.classList.remove('is-active');
+                node.querySelector('.faq-trigger-btn').setAttribute('aria-expanded', 'false');
+                node.querySelector('.faq-math-indicator').textContent = '+';
+            });
+
+            if (!isActive) {
+                currentLi.classList.add('is-active');
+                buttonElement.setAttribute('aria-expanded', 'true');
+                buttonElement.querySelector('.faq-math-indicator').textContent = '-';
+            }
+        }
+    </script>
 </section>
 
 <section id="contact" style="background: #07090e; padding: 120px 10%; color: #fff; border-top: 1px solid var(--border-color);">
