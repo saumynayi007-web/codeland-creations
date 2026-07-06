@@ -2398,6 +2398,131 @@ gsap.from("#contact", {
     })();
 </script>
 
+
+<!-- ── PREMIUM BACK TO TOP COMPONENT ARCHITECTURE ── -->
+<div class="scroll-top-wrapper">
+    <!-- EMBEDDED HIGH-PERFORMANCE STYLE INTERPOLATION LAYER -->
+    <style>
+        .back-to-top-btn {
+            position: fixed;
+            bottom: 2.5rem;
+            right: 2.5rem;
+            width: 52px;
+            height: 52px;
+            background-color: #07090e; /* Fixed studio dark canvas */
+            border: 1px solid rgba(223, 202, 167, 0.2); /* Soft premium gold stroke */
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999; /* Ensures it floats completely above ambient line backdrops */
+            outline: none;
+            
+            /* Initial Hidden State Asset Parameters */
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px) scale(0.9);
+            
+            /* Smooth acceleration profile for cinematic weight */
+            transition: 
+                opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                visibility 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                transform 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        /* SVG Arrow Geometry Custom Properties */
+        .back-to-top-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: #ffffff; /* Crisp white arrow default */
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: stroke 0.3s ease, transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Active Reveal Trigger Class handled by the Scroll Event Loop */
+        .back-to-top-btn.reveal {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        /* ── INTERACTIVE HOVER MICRO-ANIMATIONS ── */
+        .back-to-top-btn:hover {
+            border-color: #dfcaa7; /* Shifts cleanly to your Signature Gold */
+            background-color: #0c0f17;
+            box-shadow: 
+                0 0 20px rgba(223, 202, 167, 0.15),
+                0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .back-to-top-btn:hover svg {
+            stroke: #dfcaa7; /* Arrow glows gold */
+            transform: translateY(-3px); /* Subtle premium vertical lift */
+        }
+
+        .back-to-top-btn:active {
+            transform: scale(0.92); /* Satisfying mechanical click compression */
+        }
+
+        /* Responsive Breakpoint Adjustment for Mobile Layout Integrity */
+        @media (max-width: 768px) {
+            .back-to-top-btn {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 46px;
+                height: 46px;
+            }
+        }
+    </style>
+
+    <!-- NATIVE INTERACTIVE UTILITY TOKEN -->
+    <button 
+        id="global-scroll-top" 
+        class="back-to-top-btn" 
+        aria-label="Scroll back to top of page"
+        onclick="executeSmoothScrollTop()"
+    >
+        <!-- Minimalist Architectural Upward Chevron -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
+
+    <!-- REAL-TIME VIEWPORT SCROLL MONITORING LOGIC -->
+    <script>
+        (function() {
+            const scrollBtn = document.getElementById('global-scroll-top');
+            if (!scrollBtn) return;
+
+            function processScrollPosition() {
+                // Reveals the button once the user scrolls down further than 450 pixels
+                if (window.scrollY > 450) {
+                    scrollBtn.classList.add('reveal');
+                } else {
+                    scrollBtn.classList.remove('reveal');
+                }
+            }
+
+            // Passive event listeners keep scrolling light and unthrottled on mobile GPUs
+            window.addEventListener('scroll', processScrollPosition, { passive: true });
+        })();
+
+        function executeSmoothScrollTop() {
+            // Uses the browser's native hardware-accelerated fluid scroll engine
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</div>
+
 </body>
 
 </html> 
