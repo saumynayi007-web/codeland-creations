@@ -64,7 +64,7 @@ app.post('/api/verify-payment', async (req, res) => {
     }
 });
 
-const ADMIN_PASSWORD = "ChooseYourSecretPassword123"; // 👈 Change this to your real secret password!
+const ADMIN_PASSWORD = "Saumy_Manav_Codeland"; // 👈 Change this to your real secret password!
 
 function requireAdminAuth(req, res, next) {
     if (req.query.pass === ADMIN_PASSWORD) {
