@@ -835,6 +835,21 @@
         }
     }   
    
+   /* --- Volumetric Overlay Transparency Adaptability Rules --- */
+.hero, .services-section, .branding-section, .checkout-section {
+    position: relative;
+    z-index: 2; 
+    background-color: transparent !important; 
+}
+
+.bento-card, .payment-container, #contact-form {
+    position: relative;
+    z-index: 3;
+    background: rgba(7, 9, 14, 0.55) !important; 
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
 </style>
 
 </head>
@@ -1000,8 +1015,145 @@
 
                     </p>
 
-                    <button class="pay-btn" onclick="openSecureGateway()">Process Retainer Safely</button>
+                    <!-- Premium Interactive Payment Token Container -->
+<div class="payment-btn-wrapper" style="position: relative; width: 100%; display: flex; justify-content: center; margin-top: 1.5rem;">
+    
+    <!-- EMBEDDED DYNAMIC BUTTON STYLESHEET -->
+    <style>
+        .gen-btn {
+            --border-radius: 50px;
+            --padding: 4px;
+            --transition: 0.4s;
+            --button-color: #07090e;
+            --highlight-gold: #dfcaa7;
 
+            width: 100%;
+            max-width: 420px;
+            outline: none;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.2rem 2rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.85);
+            background-color: var(--button-color);
+            position: relative;
+
+            box-shadow:
+                inset 0px 1px 1px rgba(255, 255, 255, 0.15),
+                inset 0px 2px 2px rgba(255, 255, 255, 0.1),
+                0px -1px 2px rgba(0, 0, 0, 0.5),
+                0px 8px 24px rgba(0, 0, 0, 0.6);
+
+            border: solid 1px rgba(223, 202, 167, 0.15);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: box-shadow var(--transition), border var(--transition), background-color var(--transition), color var(--transition);
+        }
+        
+        .gen-btn::before {
+            content: "";
+            position: absolute;
+            top: calc(0px - var(--padding));
+            left: calc(0px - var(--padding));
+            width: calc(100% + var(--padding) * 2);
+            height: calc(100% + var(--padding) * 2);
+            border-radius: calc(var(--border-radius) + var(--padding));
+            pointer-events: none;
+            background-image: linear-gradient(0deg, rgba(0,0,0,0.4), rgba(0,0,0,0.8));
+            z-index: -1;
+            transition: box-shadow var(--transition), filter var(--transition);
+            box-shadow: 1px 1px 1px rgba(255,255,255,0.05), -1px -1px 1px rgba(0,0,0,0.4);
+        }
+        
+        .gen-btn::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: inherit;
+            pointer-events: none;
+            background-image: linear-gradient(0deg, #fff, var(--highlight-gold), rgba(223, 202, 167, 0.3), 12%, transparent);
+            background-position: 0 0;
+            opacity: 0.05;
+            transition: opacity var(--transition), filter var(--transition);
+        }
+
+        .gen-btn-letter {
+            position: relative;
+            display: inline-block;
+            color: rgba(255, 255, 255, 0.4);
+            transition: color var(--transition), text-shadow var(--transition);
+        }
+
+        .gen-btn-svg {
+            height: 20px;
+            width: 20px;
+            margin-right: 0.75rem;
+            fill: #dfcaa7;
+            opacity: 0.7;
+            filter: drop-shadow(0 0 2px rgba(223, 202, 167, 0.4));
+            transition: fill var(--transition), filter var(--transition), opacity var(--transition), transform 0.4s ease;
+        }
+
+        .gen-txt-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap; /* FIXED: Prevents letters from wrapping strangely on phones */
+        }
+
+        .gen-btn:hover {
+            border: solid 1px rgba(223, 202, 167, 0.6);
+            color: #fff;
+            box-shadow: inset 0px 1px 1px rgba(255, 255, 255, 0.2), 0px 0px 20px rgba(223, 202, 167, 0.15);
+        }
+
+        .gen-btn:hover::before { box-shadow: 0 0 25px rgba(223, 202, 167, 0.1) inset; }
+        .gen-btn:hover::after { opacity: 0.25; }
+
+        .gen-btn:hover .gen-btn-svg {
+            fill: #fff;
+            opacity: 1;
+            transform: scale(1.1) rotate(4deg);
+            filter: drop-shadow(0 0 5px var(--highlight-gold));
+        }
+
+        .gen-btn:hover .gen-btn-letter {
+            color: #fff;
+            text-shadow: 0 0 4px rgba(255,255,255,0.6);
+        }
+
+        .gen-btn:active, .gen-btn.processing {
+            border: solid 1px var(--highlight-gold);
+            background-color: rgba(223, 202, 167, 0.1);
+        }
+
+        .gen-btn:active .gen-btn-letter, .gen-btn.processing .gen-btn-letter {
+            animation: client-flicker 0.8s ease-in-out infinite alternate;
+        }
+
+        @keyframes client-flicker {
+            0% { opacity: 0.5; text-shadow: 0 0 2px var(--highlight-gold); }
+            100% { opacity: 1; text-shadow: 0 0 8px #fff; }
+        }
+    </style>
+
+    <!-- NATIVE SYSTEM BUTTON COMPONENT -->
+    <!-- FIXED: Removed the inline handler to let your existing submit listeners handle form data smoothly -->
+    <button type="submit" onclick="openSecureGateway()" id="retainer-submit-btn" class="gen-btn">
+        <svg class="gen-btn-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"></path>
+        </svg>
+        <div class="gen-txt-wrapper">
+            <span class="gen-btn-letter">P</span><span class="gen-btn-letter">r</span><span class="gen-btn-letter">o</span><span class="gen-btn-letter">c</span><span class="gen-btn-letter">e</span><span class="gen-btn-letter">s</span><span class="gen-btn-letter">s</span><span class="gen-btn-letter">&nbsp;</span><span class="gen-btn-letter">r</span><span class="gen-btn-letter">e</span><span class="gen-btn-letter">t</span><span class="gen-btn-letter">a</span><span class="gen-btn-letter">i</span><span class="gen-btn-letter">n</span><span class="gen-btn-letter">e</span><span class="gen-btn-letter">r</span><span class="gen-btn-letter">&nbsp;</span><span class="gen-btn-letter">s</span><span class="gen-btn-letter">a</span><span class="gen-btn-letter">f</span><span class="gen-btn-letter">e</span><span class="gen-btn-letter">l</span><span class="gen-btn-letter">y</span>
+        </div>
+    </button>
+</div>
                 </div>
 
 
@@ -1601,6 +1753,71 @@ gsap.from("#contact", {
 });
 
     </script>
+
+<!-- Full-Screen Ambient Edge-to-Edge Fluid Wave Path Layer -->
+<div id="ambient-brain-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; overflow: hidden; background: transparent; pointer-events: none;">
+    <svg 
+        id="global-scroll-brain-svg"
+        width="100%" 
+        height="100%" 
+        viewBox="0 0 1920 1080" 
+        preserveAspectRatio="none"
+        fill="none" 
+        xmlns="http://www.w3.org/2000/svg"
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.22; will-change: stroke-dashoffset; filter: drop-shadow(0 0 20px rgba(223, 202, 167, 0.08));"
+    >
+        <!-- Background Guide Trace: Deep charcoal track mapping out the side-to-side waves -->
+        <path 
+            d="M -50,150 C 500,50 600,450 1100,250 C 1500,100 1700,600 1300,750 C 1000,850 400,600 200,900 C 50,1050 800,1000 2000,950" 
+            stroke="#1e293b" 
+            stroke-width="10" 
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        />
+        <!-- Active Draw Path: Mapped directly to Codeland’s signature Premium Gold tone (#dfcaa7) -->
+        <path 
+            id="global-drawing-path"
+            d="M -50,150 C 500,50 600,450 1100,250 C 1500,100 1700,600 1300,750 C 1000,850 400,600 200,900 C 50,1050 800,1000 2000,950" 
+            stroke="#dfcaa7" 
+            stroke-width="12" 
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        />
+    </svg>
+</div>
+
+<!-- NATIVE HARDWARE-ACCELERATED EDGE SCROLL ENGINE -->
+<script>
+    (function() {
+        const path = document.getElementById('global-drawing-path');
+        if (!path) return;
+
+        // Initialize total structural vector length mechanics
+        const totalLength = path.getTotalLength();
+        path.style.strokeDasharray = totalLength + ' ' + totalLength;
+        path.style.strokeDashoffset = totalLength;
+
+        function scrollTracker() {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            
+            if (scrollHeight <= 0) return;
+
+            // Extract fluid 0.0 -> 1.0 progress vector matching document viewport bounds
+            const progress = scrollTop / scrollHeight;
+
+            // Synchronize line tracking offset cleanly
+            const strokeOffset = totalLength * (1 - progress);
+            path.style.strokeDashoffset = strokeOffset;
+        }
+
+        window.addEventListener('scroll', scrollTracker, { passive: true });
+        window.addEventListener('resize', scrollTracker);
+        
+        // Render current alignment state instantly
+        scrollTracker();
+    })();
+</script>
 
 </body>
 
