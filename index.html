@@ -912,18 +912,21 @@
             <span class="hero-tag" id="tag">Next-Gen Digital Studio</span>
 
             <h1 id="title">We weave engineered excellence into <span>premium digital reality</span>.</h1>
-           <!-- Premium 3D FlipText Architecture Node -->
-<div class="flip-text-wrapper inline-block" id="hero-flip-text" style="perspective: 1000px; line-height: 1.2;">
+            
+            
+<!-- Premium 4-Sided Geometric Prism Ticker Target Block -->
+<div class="flip-text-wrapper inline-block" id="hero-flip-text" style="perspective: 1200px; line-height: 1.5;">
     Build beautiful interfaces
 </div>
 
-<!-- EMBEDDED FLIPTEXT LAYOUT ANIMATION CORE -->
+<!-- EMBEDDED FOUR-SIDED PRISM GEOMETRY ENGINE -->
 <style>
     .flip-text-wrapper {
         font-family: 'Playfair Display', serif;
         font-size: clamp(1.8rem, 4vw, 2.8rem);
         font-weight: 500;
         color: #ffffff;
+        letter-spacing: -0.01em; /* Natural premium tracking look */
     }
 
     .flip-word {
@@ -936,71 +939,90 @@
         display: inline-block;
         position: relative;
         transform-style: preserve-3d;
-        color: #ffffff;
+        vertical-align: middle;
+        color: transparent; /* THE FIX: Keeps the layout text invisible but lets browser measure its exact width naturally */
+        user-select: none;
         
-        /* 
-          Matches the exact specifications from your component interface logic loops 
-          using pure hardware-accelerated cubic-bezier transitions 
-        */
-        animation: exact-react-flip-loop var(--flip-duration, 2.2s) cubic-bezier(0.76, 0, 0.24, 1) var(--flip-iteration, infinite);
+        /* Smooth cinematic mechanical transition curve */
+        animation: smooth-prism-roll var(--flip-duration, 7.5s) cubic-bezier(0.25, 1, 0.5, 1) var(--flip-iteration, infinite);
         animation-delay: var(--flip-delay, 0s);
     }
 
-    /* 
-      Calculates the structural 3D flip layer projection.
-      This acts as the bottom/under-face using standard CSS variable definitions.
-    */
-    .flip-char::after {
-        content: attr(data-char);
+    /* Shared style metrics for all 4 intersecting geometric planes */
+    .char-face {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: transparent;
-        color: #dfcaa7; /* Signature Codeland Gold Palette */
-        transform: rotateX(-90deg) translateZ(0.52em);
-        transform-origin: center center;
-        pointer-events: none;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     /* 
-      Replicates the exact native motion curve loop timeline behavior 
-      where the text flips forward to show gold, then turns completely 360° 
-      forward to seamlessly transition back to its default white face state.
+       THE VISUAL KERNING FIX: 
+       Each face now copies the exact bounding width calculated by the hidden parent text.
+       No more hardcoded width overlaps or gaps.
     */
-    @keyframes exact-react-flip-loop {
-        0%, 12% {
+    .char-face.front {
+        color: #ffffff;
+        transform: rotateX(0deg) translateZ(0.6em);
+    }
+
+    .char-face.bottom {
+        color: #dfcaa7; /* Signature Premium Gold */
+        transform: rotateX(-90deg) translateZ(0.6em);
+    }
+
+    .char-face.back {
+        color: #ffffff;
+        transform: rotateX(-180deg) translateZ(0.6em);
+    }
+
+    .char-face.top {
+        color: #dfcaa7;
+        transform: rotateX(-270deg) translateZ(0.6em);
+    }
+
+    /* Slow continuous step intervals tumbling forward cleanly */
+    @keyframes smooth-prism-roll {
+        0%, 15% {
             transform: rotateX(0deg);
         }
-        42%, 58% {
+        25%, 40% {
             transform: rotateX(90deg);
         }
-        88%, 100% {
+        50%, 65% {
+            transform: rotateX(180deg);
+        }
+        75%, 90% {
+            transform: rotateX(270deg);
+        }
+        98%, 100% {
             transform: rotateX(360deg);
         }
     }
 </style>
 
-<!-- RUNTIME SINE WAVE PARSER INJECTOR -->
+<!-- FOUR-SIDED PRISM COMPILER SCRIPT -->
 <script>
     (function() {
         const container = document.getElementById('hero-flip-text');
         if (!container) return;
 
-        // Configuration matching your interface prop defaults exactly
         const childrenText = "Build beautiful interfaces";
-        const duration = 2.2;
+        const duration = 7.5; 
         const delay = 0;
         const loop = true;
         const separator = " ";
         const together = false;
 
-        // Split text by custom separator matching `useMemo` logic loop arrays
         const words = childrenText.split(separator);
         const totalChars = childrenText.length;
 
-        // Replicates getCharIndex mapping tracking method cleanly
         function getCharIndex(wordIndex, charIndex) {
             let index = 0;
             for (let i = 0; i < wordIndex; i++) {
@@ -1009,7 +1031,6 @@
             return index + charIndex;
         }
 
-        // Flush container clean before injection
         container.innerHTML = "";
 
         words.forEach((word, wordIndex) => {
@@ -1020,42 +1041,43 @@
             chars.forEach((char, charIndex) => {
                 const currentGlobalIndex = getCharIndex(wordIndex, charIndex);
 
-                // Exact Mathematical Sine Interpolation from your component logic loops
                 let calculatedDelay = delay;
                 if (!together) {
                     const normalizedIndex = currentGlobalIndex / totalChars;
                     const sineValue = Math.sin(normalizedIndex * (Math.PI / 2));
-                    calculatedDelay = sineValue * (duration * 0.25) + delay;
+                    calculatedDelay = sineValue * (duration * 0.18) + delay;
                 }
 
                 const charSpan = document.createElement('span');
                 charSpan.className = 'flip-char';
                 charSpan.setAttribute('data-char', char);
+                
+                // IMPORTANT: The character is placed right here inside the root node.
+                // The browser reads this string layout to make the word perfect natively.
                 charSpan.textContent = char;
 
-                // Pass context engine calculations directly to style properties
                 charSpan.style.setProperty('--flip-duration', `${duration}s`);
                 charSpan.style.setProperty('--flip-delay', `${calculatedDelay}s`);
                 charSpan.style.setProperty('--flip-iteration', loop ? 'infinite' : '1');
+
+                const faces = ['front', 'bottom', 'back', 'top'];
+                faces.forEach(faceType => {
+                    const faceNode = document.createElement('span');
+                    faceNode.className = `char-face ${faceType}`;
+                    faceNode.textContent = char;
+                    charSpan.appendChild(faceNode);
+                });
 
                 wordSpan.appendChild(charSpan);
             });
 
             container.appendChild(wordSpan);
 
-            // Handle separator alignment tokens exactly like your conditional rendering layers
             if (separator === " " && wordIndex < words.length - 1) {
                 const space = document.createElement('span');
-                space.className = 'whitespace';
                 space.style.display = 'inline-block';
                 space.innerHTML = '&nbsp;';
                 container.appendChild(space);
-            } else if (separator !== " " && wordIndex < words.length - 1) {
-                const sepSpan = document.createElement('span');
-                sepSpan.className = 'separator';
-                sepSpan.style.display = 'inline-block';
-                sepSpan.textContent = separator;
-                container.appendChild(sepSpan);
             }
         });
     })();
