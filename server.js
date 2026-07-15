@@ -148,11 +148,12 @@ app.get('/admin/proofs', async (req, res) => {
                 </style>
                 <script>
                     // Core Authentication Evaluation Loop
+                    const masterPass = ` + JSON.stringify(ADMIN_PASSWORD) + `;
                     document.addEventListener("DOMContentLoaded", function() {
                         const urlParams = new URLSearchParams(window.location.search);
                         const urlPass = urlParams.get('pass');
                         const sessionToken = sessionStorage.getItem("admin_session_key");
-                        const masterPass = "${ADMIN_PASSWORD}";
+                        
 
                         // Mode 1: URL parameter bypass authentication check
                         if (urlPass === masterPass) {
