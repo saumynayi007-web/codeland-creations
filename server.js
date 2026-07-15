@@ -237,6 +237,12 @@ app.get('/admin/proofs', async (req, res) => {
             
             </html>
         `);
+        const finalizedHtml = adminPageHtml
+            .replace(/%%ADMIN_PASSWORD%%/g, ADMIN_PASSWORD)
+            .replace(/%%SHOW_LOGIN_GATE%%/g, hasValidUrlPass ? 'display: none;' : '');
+
+        res.send(finalizedHtml);
+        
     } catch (err) {
         res.status(500).send("Database Error: " + err.message);
     }
