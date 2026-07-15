@@ -148,7 +148,7 @@ app.get('/admin/proofs', async (req, res) => {
                 </style>
                 <script>
                     // Core Authentication Evaluation Loop
-                    const masterPass = ` + JSON.stringify(ADMIN_PASSWORD) + `;
+                    const masterPass ="%%ADMIN_PASSWORD%%";
                     document.addEventListener("DOMContentLoaded", function() {
                         const urlParams = new URLSearchParams(window.location.search);
                         const urlPass = urlParams.get('pass');
