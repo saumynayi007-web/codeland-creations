@@ -116,6 +116,69 @@ app.get('/admin/proofs', requireAdminAuth, async (req, res) => {
                     table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
                     th, td { border: 1px solid #1e293b; padding: 14px; text-align: left; }
                     th { background: #0d111a; color: #dfcaa7; }
+
+                    /* ── PREMIUM STUDIO GATE LOGIN STYLING ── */
+                    .auth-overlay {
+                        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+                        background: #07090e; z-index: 10000;
+                        display: flex; align-items: center; justify-content: center;
+                    }
+                    .auth-card {
+                        background: rgba(15, 23, 42, 0.45);
+                        border: 1px solid rgba(223, 202, 167, 0.15);
+                        backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+                        padding: 3rem; border-radius: 24px; width: 100%; max-width: 400px;
+                        text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+                    }
+                    .auth-input {
+                        width: 100%; padding: 1rem; border-radius: 50px;
+                        background: #0c0f17; border: 1px solid rgba(223, 202, 167, 0.2);
+                        color: #fff; text-align: center; font-size: 1rem; margin: 1.5rem 0;
+                        outline: none; box-sizing: border-box; transition: 0.3s;
+                    }
+                    .auth-input:focus {
+                        border-color: #dfcaa7; box-shadow: 0 0 15px rgba(223, 202, 167, 0.2);
+                    }
+                    .auth-btn {
+                        width: 100%; padding: 1rem; border-radius: 50px;
+                        background: #dfcaa7; border: none; color: #07090e;
+                        font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.3s;
+                    }
+                    .auth-btn:hover { background: #fff; box-shadow: 0 0 20px rgba(223, 202, 167, 0.3); }
+                </style>
+                <script>
+                    // Core Authentication Evaluation Loop
+                    document.addEventListener("DOMContentLoaded", function() {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const urlPass = urlParams.get('pass');
+                        const sessionToken = sessionStorage.getItem("admin_session_key");
+                        const masterPass = "${ADMIN_PASSWORD}";
+
+                        // Mode 1: URL parameter bypass authentication check
+                        if (urlPass === masterPass) {
+                            sessionStorage.setItem("admin_session_key", urlPass);
+                            document.getElementById("login-gate").style.display = "none";
+                            return;
+                        }
+
+                        // Mode 2: Existing verified active session check
+                        if (sessionToken === masterPass) {
+                            document.getElementById("login-gate").style.display = "none";
+                        }
+                    });
+
+                    function validateAdminGate() {
+                        const entered = document.getElementById("password-field").value;
+                        if (entered === "${ADMIN_PASSWORD}") {
+                            sessionStorage.setItem("admin_session_key", entered);
+                            document.getElementById("login-gate").style.display = "none";
+                        } else {
+                            const err = document.getElementById("err-txt");
+                            err.textContent = "Invalid Credentials. Access Denied.";
+                            err.style.color = "#ef4444";
+                        }
+                    }
+                        
                 </style>
                 <script>
                     function approvePayment(id) {
