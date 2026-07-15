@@ -74,7 +74,7 @@ function requireAdminAuth(req, res, next) {
 }
 
 // Admin Panel showing incoming logs with live invoice compilation controls
-app.get('/admin/proofs', requireAdminAuth, async (req, res) => {
+app.get('/admin/proofs', async (req, res) => {
     try {
         const database = await connectDB();
         const collection = database.collection('submissions');
