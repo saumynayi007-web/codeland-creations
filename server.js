@@ -154,12 +154,17 @@ app.get('/admin/proofs', requireAdminAuth, async (req, res) => {
 });
 
 // Trigger Approval state parameter toggles
+// Trigger Approval state parameter toggles - SECURED!
 app.post('/api/approve-payment', async (req, res) => {
     try {
+        // Authenticate the API request payload
+        if (req.body.pass !== ADMIN_PASSWORD) {
+            return res.status(403).json({ success: false, error: "Unauthorized endpoint action access blocked." });
+        }
+
         const database = await connectDB();
         const collection = database.collection('submissions');
         
-        // Find the record by its string ID and flip approved to true in the cloud collection
         const result = await collection.updateOne(
             { id: req.body.id }, 
             { $set: { approved: true } }
