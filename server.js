@@ -200,6 +200,12 @@ app.get('/admin/proofs', async (req, res) => {
         }
     });
 }
+
+
+function viewInvoice(id) {
+                        const pass = sessionStorage.getItem("admin_session_key");
+                        window.open('/admin/invoice/' + id + '?pass=' + pass, '_blank');
+                    }
                     function openBlobImage(encodedData) {
                         if(!encodedData) return;
                         const dataURI = decodeURIComponent(encodedData);
@@ -242,7 +248,7 @@ app.get('/admin/proofs', async (req, res) => {
             .replace(/%%SHOW_LOGIN_GATE%%/g, hasValidUrlPass ? 'display: none;' : '');
 
         res.send(finalizedHtml);
-        
+
     } catch (err) {
         res.status(500).send("Database Error: " + err.message);
     }
