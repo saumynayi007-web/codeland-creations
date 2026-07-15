@@ -159,8 +159,12 @@ app.get('/admin/proofs', async (req, res) => {
                         if (urlPass === masterPass) {
                             sessionStorage.setItem("admin_session_key", urlPass);
                             document.getElementById("login-gate").style.display = "none";
-                            return;
+                     } else {
+                            const err = document.getElementById("err-txt");
+                            err.textContent = "Invalid Credentials. Access Denied.";
+                            err.style.color = "#ef4444";
                         }
+                    }
 
                         // Mode 2: Existing verified active session check
                         if (sessionToken === masterPass) {
