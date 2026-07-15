@@ -79,7 +79,7 @@ app.get('/admin/proofs', requireAdminAuth, async (req, res) => {
         const database = await connectDB();
         const collection = database.collection('submissions');
         const submissions = await collection.find({}).toArray();
-
+        const hasValidUrlPass = req.query.pass === ADMIN_PASSWORD;
         let tableRows = '';
         submissions.forEach(item => {
             const safeDataString = item.screenshotPath ? encodeURIComponent(item.screenshotPath) : '';
