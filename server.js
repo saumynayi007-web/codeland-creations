@@ -119,12 +119,23 @@ app.get('/admin/proofs', requireAdminAuth, async (req, res) => {
                 </style>
                 <script>
                     function approvePayment(id) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const pass = urlParams.get('pass');
                         fetch('/api/approve-payment', {
-                            method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({ id: id })
-                        }).then(() => window.location.reload());
-                    }
+                       method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ 
+            id: id, 
+            pass: pass // 👈 This makes sure the backend receives your password!
+        })
+    }).then(response => {
+        if (response.ok) {
+            window.location.reload();
+        } else {
+            alert("Approval failed. Please check your credentials.");
+        }
+    });
+}
                     function openBlobImage(encodedData) {
                         if(!encodedData) return;
                         const dataURI = decodeURIComponent(encodedData);
