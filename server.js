@@ -119,12 +119,26 @@ app.get('/admin/proofs', requireAdminAuth, async (req, res) => {
                 </style>
                 <script>
                     function approvePayment(id) {
-                        fetch('/api/approve-payment', {
-                            method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({ id: id })
-                        }).then(() => window.location.reload());
-                    }
+    // 1. Get the '?pass=...' parameter from your current browser URL bar
+    const urlParams = new URLSearchParams(window.location.search);
+    const pass = urlParams.get('pass');
+    
+    // 2. Pass both the invoice ID and the password securely in the body
+    fetch('/api/approve-payment', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ 
+            id: id, 
+            pass: pass // 👈 This makes sure the backend receives your password!
+        })
+    }).then(response => {
+        if (response.ok) {
+            window.location.reload();
+        } else {
+            alert("Approval failed. Please check your credentials.");
+        }
+    });
+}
                     function openBlobImage(encodedData) {
                         if(!encodedData) return;
                         const dataURI = decodeURIComponent(encodedData);
