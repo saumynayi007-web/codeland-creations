@@ -178,7 +178,7 @@ app.get('/admin/proofs', requireAdminAuth, async (req, res) => {
                             err.style.color = "#ef4444";
                         }
                     }
-                        
+
                 </style>
                 <script>
                     function approvePayment(id) {
@@ -214,12 +214,26 @@ app.get('/admin/proofs', requireAdminAuth, async (req, res) => {
                 </script>
             </head>
             <body>
+                 
+                <div class="auth-overlay" id="login-gate" style="${hasValidUrlPass ? 'display: none;' : ''}">
+                    <div class="auth-card">
+                        <h2 style="font-family: serif; color: #dfcaa7; margin: 0 0 0.5rem 0; font-weight: normal; font-size: 1.8rem;">CODELAND STUDIOS</h2>
+                        <p style="color: #636f8a; font-size: 0.9rem; margin: 0; letter-spacing: 1px; text-transform: uppercase;">Administrative Terminal Entry</p>
+                        
+                        <input type="password" id="password-field" class="auth-input" placeholder="Enter System Password" onkeydown="if(event.key === 'Enter') validateAdminGate()">
+                        <button onclick="validateAdminGate()" class="auth-btn">Authenticate Clearance</button>
+                        
+                        <p id="err-txt" style="margin-top: 1rem; font-size: 0.85rem; min-height: 1.2em;"></p>
+                    </div>
+                </div>
+
                 <h2 style="color: #dfcaa7;">Codeland Creations — Client Audit Desk</h2>
                 <table>
                     <tr><th>Invoice ID</th><th>Date</th><th>Client Name</th><th>App</th><th>UTR / Ref Number</th><th>Screenshot</th><th>Action Panel</th></tr>
                     ${tableRows || '<tr><td colspan="7" style="text-align:center; color:#636f8a;">No records found.</td></tr>'}
                 </table>
             </body>
+            
             </html>
         `);
     } catch (err) {
